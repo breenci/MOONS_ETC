@@ -2,11 +2,11 @@ from app import app
 from flask import render_template
 import configparser
 
-from app.forms import LoginForm
+from app.forms import ETC_form
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    form = LoginForm(template_name = 'test1')
+    form = ETC_form(template_name = 'test1')
     if form.validate_on_submit():
         config = configparser.ConfigParser()
         config.read('ParamFile.ini')

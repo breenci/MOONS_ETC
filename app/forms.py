@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, IntegerField, SubmitField, FloatField
 from wtforms.validators import DataRequired
 
-class LoginForm(FlaskForm):
+class ETC_form(FlaskForm):
     # target variables
     template_name = StringField('Template', validators=[DataRequired()])
     magnitude = FloatField('Magnitude', validators=[DataRequired()])
