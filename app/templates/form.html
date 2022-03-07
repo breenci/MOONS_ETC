@@ -13,7 +13,7 @@
     <form action="" method="post" class="form" role="form">
     {{ form.csrf_token() }}
         <div class="row">
-            <div class="col col-md-3">
+            <div class="form-group col-md-3">
                 <h4> Target </h4>
                 <hr>
                 {{ wtf.form_field(form.template_name, class='form-control') }}
@@ -24,14 +24,14 @@
                 {{ wtf.form_field(form.mode, class='form-control') }}
             </div>
             <div class="form-group col-md-3">
-                <h4> Conditions </h4>
-                <hr>
-                {{ wtf.form_field(form.seeing, class='form-control') }}
-            </div>
-            <div class="form-group col-md-3">
                 <h4> Simulation </h4>
                 <hr>
                 {{ wtf.form_field(form.sky_temp, class='form-control') }}
+            </div>
+            <div class="form-group col-md-3">
+                <h4> Conditions </h4>
+                <hr>
+                {{ wtf.form_field(form.seeing, class='form-control') }}
             </div>
         </div>
         <div class="row">
@@ -42,10 +42,48 @@
                 {{ wtf.form_field(form.strategy, class='form-control') }}
             </div>
             <div class="form-group col-md-3">
-                {{ wtf.form_field(form.airmass, class='form-control') }}
+                {{ wtf.form_field(form.sky_res, class='form-control') }}
             </div>
             <div class="form-group col-md-3">
-                {{ wtf.form_field(form.sky_res, class='form-control') }}
+                {{ wtf.form_field(form.airmass, class='form-control') }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-3">
+                {{ wtf.form_field(form.filter, class='form-control') }}
+            </div>
+            <div class="form-group col-md-3">
+                {{ wtf.form_field(form.adc_refwave, class='form-control') }}
+            </div>
+            <div class="form-group col-md-3">
+                {{ wtf.form_field(form.tell, class='form-control') }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-3">
+                {{ wtf.form_field(form.system, class='form-control') }}
+            </div>
+            <div class="form-group col-md-3">
+                {{ wtf.form_field(form.exp_time, class='form-control') }}
+            </div>
+            <div class="form-group col-md-3">
+                {{ wtf.form_field(form.flux_cal, class='form-control') }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-3">
+                {{ wtf.form_field(form.reddening, class='form-control') }}
+            </div>
+            <div class="form-group col-md-3">
+                {{ wtf.form_field(form.nexp, class='form-control') }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-3">
+                {{ wtf.form_field(form.displacement, class='form-control') }}
+            </div>
+            <div class="form-group col-md-3">
+                {{ wtf.form_field(form.dit, class='form-control') }}
             </div>
         </div>
         {{ wtf.form_field(form.submit, class='form-control') }} 
