@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template
+from flask import render_template, send_file
 import configparser
 
 from app.forms import ETC_form
@@ -37,3 +37,8 @@ def index():
             config.write(configfile)
 
     return render_template('form.html', form=form)
+
+
+@app.route('/getTxtFile')
+def download():
+    return send_file('/Users/ciaran.breen/Documents/MOONS_ETC/app/outputs/signal_to_noise_YJ.txt', as_attachment=True)
