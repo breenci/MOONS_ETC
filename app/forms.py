@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired
 
 class ETC_form(FlaskForm):
     # target variables
-    template_name = SelectField('Template', choices=[('constant_in_wav', 'Example_spectra/constant_in_wav.fits'), ('stellar', 'Example_spectra/input_stellar_template.fits')], validators=[DataRequired()])
+    template_name = SelectField('Template', choices=[('Example_spectra/constant_in_wav.fits', 'constant_in_wav'), ('Example_spectra/input_stellar_template.fits', 'stellar')], validators=[DataRequired()])
     magnitude = FloatField('Magnitude', validators=[DataRequired()])
     filter = SelectField('Filter', choices=['H', 'J', 'I'], validators=[DataRequired()])
     system = SelectField('System', choices=['AB', 'Vega'])
