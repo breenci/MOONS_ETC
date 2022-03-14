@@ -1,6 +1,8 @@
 from app import app
 from flask import render_template, send_file
 import configparser
+from moons_etc_backend import do_etc_calc
+
 
 from app.forms import ETC_form
 
@@ -21,7 +23,7 @@ def index():
         config.set('instrument', 'moons_mode', form.mode.data)
         config.set('instrument', 'strategy', form.strategy.data)
         config.set('instrument', 'adc_refwave', str(form.adc_refwave.data))
-        config.set('instrument', 'exp_time', str(form.exp_time.data))
+        config.set('instrument', 'exptime', str(form.exp_time.data))
         config.set('instrument', 'nexp', str(form.nexp.data))
         config.set('instrument', 'dit', str(form.dit.data))
 
@@ -35,6 +37,8 @@ def index():
 
         with open('ParamFile.ini', 'w') as configfile:
             config.write(configfile)
+        
+        do_etc_calc()
 
     return render_template('form.html', form=form)
 
