@@ -86,11 +86,10 @@
                 {{ wtf.form_field(form.dit, class='form-control') }}
             </div>
         </div>
-        {{ wtf.form_field(form.submit, class='form-control') }} 
+        {{ wtf.form_field(form.submit, button_map={'submit':'primary'}) }}
     </form>
-    <div>
-        <hr>
-        <a class="btn btn-primary" href="\getTxtFile" role="button">Download Text File</a>
-    </div>
+    
+    <hr>
+    <a class="btn btn-primary" href="\getTxtFile" role="button">Download Text File</a>
 </div>
 {% endblock %}
