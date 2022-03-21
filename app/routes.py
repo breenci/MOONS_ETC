@@ -5,6 +5,7 @@ import configparser
 from moons_etc_backend import do_etc_calc
 import glob
 import os
+import numpy as np
 
 from app.make_plots import plot_folder
 from app.forms import ETC_form
@@ -38,15 +39,21 @@ def index():
         config.set('simulation', 'telluric', str(form.tell.data))
         config.set('simulation', 'flux_calib', str(form.flux_cal.data))
 
+        plot_list = np.array([form.sn.data, form.trans.data, form.obj_spec.data])
+        
         with open('ParamFile.ini', 'w') as configfile:
             config.write(configfile)
         
-        for file in glob.glob('app/static/*'):
-            os.remove(file)
+        # for file in glob.glob('app/static/*'):
+        #     os.remove(file)
+
+        np.savetxt('app/static/plot_selection/plot_selection.txt', plot_list)
 
         do_etc_calc()
 
-        plot_folder('app/static')
+        plot_folder('app/static/SN')
+        plot_folder('app/static/obj_spec')
+        plot_folder('app/static/transmission')
 
         return redirect('/results')
 
@@ -55,7 +62,8 @@ def index():
 
 @app.route('/results', methods=['GET'])
 def results():
-    return render_template('results.html')
+    is_plot = np.loadtxt('app/static/plot_selection/plot_selection.txt')
+    return render_template('results.html', is_plot=is_plot)
 
 
 @app.route('/get-txt/<path:filename>')

@@ -1,7 +1,8 @@
 from os import system
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, IntegerField, SubmitField, FloatField
+from wtforms import SelectField, IntegerField, SubmitField, FloatField, BooleanField
 from wtforms.validators import DataRequired
+
 
 class ETC_form(FlaskForm):
     # target variables
@@ -32,3 +33,8 @@ class ETC_form(FlaskForm):
 
     #control
     submit = SubmitField('Submit')
+
+    #plot selection
+    trans = BooleanField('Transmission')
+    sn = BooleanField('Signal-to-Noise')
+    obj_spec = BooleanField('Object Spectrum')
