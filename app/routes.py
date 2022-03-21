@@ -1,14 +1,17 @@
+from fileinput import filename
 from app import app
-from flask import render_template, send_file
+from flask import redirect, render_template, send_file, send_from_directory
 import configparser
 from moons_etc_backend import do_etc_calc
+import glob
+import os
 
-
+from app.make_plots import plot_folder
 from app.forms import ETC_form
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    form = ETC_form(template_name = 'test1')
+    form = ETC_form()
     if form.validate_on_submit():
         config = configparser.ConfigParser()
         config.read('ParamFile.ini')
@@ -38,11 +41,24 @@ def index():
         with open('ParamFile.ini', 'w') as configfile:
             config.write(configfile)
         
+        for file in glob.glob('app/static/*'):
+            os.remove(file)
+
         do_etc_calc()
+
+        plot_folder('app/static')
+
+        return redirect('/results')
 
     return render_template('form.html', form=form)
 
 
-@app.route('/getTxtFile')
-def download():
-    return send_file('/Users/ciaran.breen/Documents/MOONS_ETC/app/outputs/signal_to_noise_YJ.txt', as_attachment=True)
+@app.route('/results', methods=['GET'])
+def results():
+    return render_template('results.html')
+
+
+@app.route('/get-txt/<path:filename>')
+def send_report(filename):
+    return send_from_directory('static', filename, as_attachment=True)
+
