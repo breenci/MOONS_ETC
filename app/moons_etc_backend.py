@@ -87,7 +87,7 @@ def setup_moons(uservals,config,bandpass,device):
     instrumentconfig['spec_sampling'] = float(config[bandpass]['spec_sampling'])
     instrumentconfig['resolution']= float(config[bandpass]['resolution'])
     #instrumentconfig['template_wl_norm']= float(config[bandpass]['wav_ref'])
-    QE_file='Inst_setup/%s'%(config[device]['QE'])
+    QE_file='app/static/Inst_setup/%s'%(config[device]['QE'])
     instrumentconfig['QE_wav'], instrumentconfig['QE_eff']  = np.loadtxt(QE_file, unpack = True)
     instrumentconfig['sky_aperture']=1.1
     instrumentconfig['throughput']=config['instrument']['throughput']
@@ -237,7 +237,7 @@ def get_sky_model(sky_template,airmass_fl):
         available_airmass=np.array([1.0,1.2,1.4,1.6,1.8,2.0])
         closest_airmass=available_airmass[np.argmin(np.abs(available_airmass-airmass_fl))]
         print('Skymodel selected: SkyTemplate_ESO_a'+str(closest_airmass)+'.fits')
-        spec_hdu=fits.open('Skymodel/SkyTemplate_ESO_a'+str(closest_airmass)+'.fits')
+        spec_hdu=fits.open('app/static/Skymodel/SkyTemplate_ESO_a'+str(closest_airmass)+'.fits')
         spec=spec_hdu[0].data
         trans_spec=spec_hdu[1].data
         spec_header=spec_hdu[0].header
@@ -295,7 +295,7 @@ def get_sky_model(sky_template,airmass_fl):
 def get_efficiency(bandpass,outputwl, min_wl, max_wl,instrumentconfig, uservals):
     # Add Telescope transmission
     if (uservals['telescope']=='VLT'):
-        telescope_file='Inst_setup/%s'%instrumentconfig['telescope_eff']
+        telescope_file='app/static/Inst_setup/%s'%instrumentconfig['telescope_eff']
     telescope_wav_micron, telescope_eff  = np.loadtxt(telescope_file, unpack = True)
     telescope_wav=telescope_wav_micron*1.0e04
     # Resample telescope transmission on wlgrid
@@ -304,11 +304,11 @@ def get_efficiency(bandpass,outputwl, min_wl, max_wl,instrumentconfig, uservals)
     #data_dir='data_dir/Inst_setup'
     if (uservals['instrument']=='MOONS'):
         if (bandpass == "LR-RI" or bandpass == "HR-RI"):
-            trans_file='Inst_setup/throughput_RI_%s.txt'%instrumentconfig['throughput'] #select if best or worst curves
+            trans_file='app/static/Inst_setup/throughput_RI_%s.txt'%instrumentconfig['throughput'] #select if best or worst curves
         if (bandpass == "YJ"):
-            trans_file='Inst_setup/throughput_YJ_%s.txt'%instrumentconfig['throughput'] #select if best or worst curves
+            trans_file='app/static/Inst_setup/throughput_YJ_%s.txt'%instrumentconfig['throughput'] #select if best or worst curves
         if (bandpass == "LR-H" or bandpass == "HR-H"):
-            trans_file='Inst_setup/throughput_H_%s.txt'%instrumentconfig['throughput'] #select if best or worst curves
+            trans_file='app/static/Inst_setup/throughput_H_%s.txt'%instrumentconfig['throughput'] #select if best or worst curves
         weff,lreff,hreff = np.loadtxt(trans_file, unpack = True)
         eff_lr0=lreff
         eff_hr0=hreff
@@ -435,7 +435,7 @@ def conv_sky(sky_data,min_wl,max_wl, template_data, uservals,pixel_data, instrum
 def write_out_file(x_print, y_print, name_x, name_y, sens_out_file):
     name_x=['# '+name_x]
     name_y=[name_y]
-    with open('app/static/'+sens_out_file,'w+') as f:
+    with open('app/user_files/'+sens_out_file,'w+') as f:
         writer = csv.writer(f,delimiter='\t')
         writer.writerows(zip(name_x,name_y))
         writer.writerows(zip(x_print,y_print))
@@ -487,7 +487,7 @@ def setup_template(template_data, uservals, telescopeconfig, config):
     ####################################################################
 
 def get_fibreloss(iq_fwhm,adisp, instrumentconfig):
-    adc_lookupTable='Inst_setup/%s'%instrumentconfig['adc_table']
+    adc_lookupTable='app/static/Inst_setup/%s'%instrumentconfig['adc_table']
     adc_lt=fits.open(adc_lookupTable)
     ad=adc_lt[1].header['CRVAL1']+np.arange(0,adc_lt[1].header['NAXIS1'])*adc_lt[1].header['CDELT1']
     iq=adc_lt[1].header['CRVAL2']+np.arange(0,adc_lt[1].header['NAXIS2'])*adc_lt[1].header['CDELT2']
@@ -721,7 +721,7 @@ def make_simulation(exp_type,bandpass, pixel_data,sky_data,template_norm, templa
     ax1.set_ylabel('Counts (e-)')
     plt.legend(loc='upper right',prop={'size':8}, numpoints=1)
     plt.tight_layout()
-    f.savefig("app/static/ETC_results_%s_%s.pdf"%(bandpass,exp_type), bbox_inches='tight')
+    #f.savefig("app/static/ETC_results_%s_%s.pdf"%(bandpass,exp_type), bbox_inches='tight')
     plt.close()
 
     if uservals['flux_calib']==1:
@@ -752,14 +752,14 @@ def make_simulation(exp_type,bandpass, pixel_data,sky_data,template_norm, templa
             
             x_print=outputwl/1.0e4
             y_print=sn_cont_all
-            sens_out_file="signal_to_noise_%s.txt"%bandpass
+            sens_out_file="SN/signal_to_noise_%s.txt"%bandpass
             name_x='Lambda'
             name_y='SNR'
             wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
         
             x_print=outputwl/1.0e4
             y_print=atminterp
-            sens_out_file="Transmission_%s.txt"%bandpass
+            sens_out_file="transmission/Transmission_%s.txt"%bandpass
             name_x='Lambda'
             name_y='Transmission'
             wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
@@ -780,7 +780,7 @@ def make_simulation(exp_type,bandpass, pixel_data,sky_data,template_norm, templa
                     
             x_print=outputwl/1.0e4
             y_print=spec_source*detectorconfig['N_dit']
-            sens_out_file="object_spectrum_%s.txt"%bandpass
+            sens_out_file="obj_spec/object_spectrum_%s.txt"%bandpass
             name_x='Lambda'
             name_y='Flux'
             wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
@@ -811,14 +811,14 @@ def make_simulation(exp_type,bandpass, pixel_data,sky_data,template_norm, templa
             
         x_print=outputwl/1.0e4
         y_print=sn_cont_all
-        sens_out_file="signal_to_noise_%s.txt"%bandpass
+        sens_out_file="SN/signal_to_noise_%s.txt"%bandpass
         name_x='Lambda'
         name_y='SNR'
         wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
         
         x_print=outputwl/1.0e4
         y_print=atminterp
-        sens_out_file="Transmission_%s.txt"%bandpass
+        sens_out_file="transmission/Transmission_%s.txt"%bandpass
         name_x='Lambda'
         name_y='Transmission'
         wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
@@ -839,7 +839,7 @@ def make_simulation(exp_type,bandpass, pixel_data,sky_data,template_norm, templa
                     
         x_print=outputwl/1.0e4
         y_print=spec_source*detectorconfig['N_dit']
-        sens_out_file="object_spectrum_%s.txt"%bandpass
+        sens_out_file="obj_spec/object_spectrum_%s.txt"%bandpass
         name_x='Lambda'
         name_y='Flux'
         wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
@@ -934,10 +934,9 @@ def make_exposure(exp_type,uservals,params,config):
 
 
 def do_etc_calc():
-    config=getConfig('Inst_setup/ConfigFile.ini')
-    params= getParams('ParamFile.ini')
-    uservals=get_input(params)
-    print(params)    
+    config=getConfig('app/static/Inst_setup/ConfigFile.ini')
+    params= getParams('app/ParamFile.ini')
+    uservals=get_input(params)   
     exp_type='target'
     make_exposure(exp_type,uservals,params,config)
 

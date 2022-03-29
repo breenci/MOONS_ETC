@@ -1,21 +1,21 @@
 from fileinput import filename
 from app import app
-from flask import redirect, render_template, send_file, send_from_directory
+from flask import redirect, render_template, send_file, send_from_directory, session
 import configparser
-from moons_etc_backend import do_etc_calc
 import glob
 import os
 import numpy as np
 
 from app.make_plots import plot_folder
 from app.forms import ETC_form
+from app.moons_etc_backend import do_etc_calc
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = ETC_form()
     if form.validate_on_submit():
         config = configparser.ConfigParser()
-        config.read('ParamFile.ini')
+        config.read('app/ParamFile.ini')
 
         config.set('target', 'template_name', form.template_name.data)
         config.set('target', 'magnitude', str(form.magnitude.data))
@@ -41,7 +41,7 @@ def index():
 
         plot_list = np.array([form.sn.data, form.trans.data, form.obj_spec.data])
         
-        with open('ParamFile.ini', 'w') as configfile:
+        with open('app/ParamFile.ini', 'w') as configfile:
             config.write(configfile)
         
         # for file in glob.glob('app/static/*'):
@@ -51,9 +51,11 @@ def index():
 
         do_etc_calc()
 
-        plot_folder('app/static/SN')
-        plot_folder('app/static/obj_spec')
-        plot_folder('app/static/transmission')
+        os.mkdir('app/user_files/' + session.sid[:5])
+        
+        # plot_folder('app/static/SN')
+        # plot_folder('app/static/obj_spec')
+        # plot_folder('app/static/transmission')
 
         return redirect('/results')
 

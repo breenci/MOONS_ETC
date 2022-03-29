@@ -1,1 +1,2 @@
 FLASK_APP=moons_etc.py
+FLASK_ENV=development
