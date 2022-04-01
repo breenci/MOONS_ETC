@@ -435,7 +435,7 @@ def conv_sky(sky_data,min_wl,max_wl, template_data, uservals,pixel_data, instrum
 def write_out_file(x_print, y_print, name_x, name_y, sens_out_file):
     name_x=['# '+name_x]
     name_y=[name_y]
-    with open('app/user_files/'+sens_out_file,'w+') as f:
+    with open('app/static/user_files/'+sens_out_file,'w+') as f:
         writer = csv.writer(f,delimiter='\t')
         writer.writerows(zip(name_x,name_y))
         writer.writerows(zip(x_print,y_print))
@@ -498,7 +498,7 @@ def get_fibreloss(iq_fwhm,adisp, instrumentconfig):
         f_frac[num]=f(adisp[num],iq_fwhm[num])[0]
     return(f_frac)
 
-def make_simulation(exp_type,bandpass, pixel_data,sky_data,template_norm, template_data, uservals, detectorconfig, telescopeconfig, instrumentconfig, min_wl, max_wl):#template_data,resolution,wlr,t_aperture,sky_aperture,template_wl_norm,ab,airmass,npix,Instrument,aper_sampl,dit,eff_opt,seeing,atm_dif_ref):
+def make_simulation(exp_type,bandpass, pixel_data,sky_data,template_norm, template_data, uservals, detectorconfig, telescopeconfig, instrumentconfig, min_wl, max_wl, folder):#template_data,resolution,wlr,t_aperture,sky_aperture,template_wl_norm,ab,airmass,npix,Instrument,aper_sampl,dit,eff_opt,seeing,atm_dif_ref):
 #    respow_kernel=instrumentconfig['respow_kernel']
     outputwl=pixel_data['outputwl']
     cen_wav=pixel_data['cen_wav']
@@ -728,7 +728,7 @@ def make_simulation(exp_type,bandpass, pixel_data,sky_data,template_norm, templa
         if exp_type=='flux_calib':
             x_print=outputwl/1.0e4
             y_print=sim_spectrum_flux #sim_spectrum_flux
-            sens_out_file="standard_flux_%s.txt"%bandpass
+            sens_out_file= folder + "/standard_flux_%s.txt"%bandpass
             name_x='Lambda'
             name_y='Flux'
             wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)   
@@ -736,7 +736,7 @@ def make_simulation(exp_type,bandpass, pixel_data,sky_data,template_norm, templa
             ratio_flux=get_standard_calibration(template_data,bandpass)
             x_print=outputwl/1.0e4
             y_print=sim_spectrum_flux/ratio_flux #sim_spectrum_flux
-            sens_out_file="sim_spectrum_fluxcalibrated_%s.txt"%bandpass
+            sens_out_file= folder + "/sim_spectrum_fluxcalibrated_%s.txt"%bandpass
             name_x='Lambda'
             name_y='Flux'
             wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)                        
@@ -745,42 +745,42 @@ def make_simulation(exp_type,bandpass, pixel_data,sky_data,template_norm, templa
             
             x_print=outputwl/1.0e4
             y_print=spec_2d_peak_intensity
-            sens_out_file="max_intensity_%s.txt"%bandpass
+            sens_out_file= folder + "/max_intensity_%s.txt"%bandpass
             name_x='Lambda'
             name_y='Flux'
             wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
             
             x_print=outputwl/1.0e4
             y_print=sn_cont_all
-            sens_out_file="SN/signal_to_noise_%s.txt"%bandpass
+            sens_out_file= folder + "/SN/signal_to_noise_%s.txt"%bandpass
             name_x='Lambda'
             name_y='SNR'
             wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
         
             x_print=outputwl/1.0e4
             y_print=atminterp
-            sens_out_file="transmission/Transmission_%s.txt"%bandpass
+            sens_out_file= folder + "/transmission/Transmission_%s.txt"%bandpass
             name_x='Lambda'
             name_y='Transmission'
             wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
             
             x_print=outputwl/1.0e4
             y_print=sim_spectrum['flux'] #sim_spectrum_flux
-            sens_out_file="sim_spectrum_%s.txt"%bandpass
+            sens_out_file= folder + "/sim_spectrum_%s.txt"%bandpass
             name_x='Lambda'
             name_y='Flux'
             wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
         
             x_print=outputwl/1.0e4
             y_print=1.0/outnoise**2 #error on the simulated spec -> inverted square of the RMS noise
-            sens_out_file="sim_spectrum_ivar_%s.txt"%bandpass
+            sens_out_file= folder + "/sim_spectrum_ivar_%s.txt"%bandpass
             name_x='Lambda'
             name_y='ivar'
             wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
                     
             x_print=outputwl/1.0e4
             y_print=spec_source*detectorconfig['N_dit']
-            sens_out_file="obj_spec/object_spectrum_%s.txt"%bandpass
+            sens_out_file= folder + "/obj_spec/object_spectrum_%s.txt"%bandpass
             name_x='Lambda'
             name_y='Flux'
             wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
@@ -789,7 +789,7 @@ def make_simulation(exp_type,bandpass, pixel_data,sky_data,template_norm, templa
         
         x_print=outputwl/1.0e4
         y_print=sim_spectrum_flux #sim_spectrum_flux
-        sens_out_file="standard_flux_%s.txt"%bandpass
+        sens_out_file= folder + "/standard_flux_%s.txt"%bandpass
         name_x='Lambda'
         name_y='Flux'
         wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)   
@@ -797,49 +797,49 @@ def make_simulation(exp_type,bandpass, pixel_data,sky_data,template_norm, templa
         ratio_flux=get_standard_calibration(template_data,bandpass)
         x_print=outputwl/1.0e4
         y_print=sim_spectrum_flux/ratio_flux #sim_spectrum_flux
-        sens_out_file="sim_spectrum_fluxcalibrated_%s.txt"%bandpass
+        sens_out_file=folder + "/sim_spectrum_fluxcalibrated_%s.txt"%bandpass
         name_x='Lambda'
         name_y='Flux'
         wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)                        
             
         x_print=outputwl/1.0e4
         y_print=spec_2d_peak_intensity
-        sens_out_file="max_intensity_%s.txt"%bandpass
+        sens_out_file=folder + "/max_intensity_%s.txt"%bandpass
         name_x='Lambda'
         name_y='Flux'
         wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
             
         x_print=outputwl/1.0e4
         y_print=sn_cont_all
-        sens_out_file="SN/signal_to_noise_%s.txt"%bandpass
+        sens_out_file=folder + "/SN/signal_to_noise_%s.txt"%bandpass
         name_x='Lambda'
         name_y='SNR'
         wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
         
         x_print=outputwl/1.0e4
         y_print=atminterp
-        sens_out_file="transmission/Transmission_%s.txt"%bandpass
+        sens_out_file=folder + "/transmission/Transmission_%s.txt"%bandpass
         name_x='Lambda'
         name_y='Transmission'
         wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
             
         x_print=outputwl/1.0e4
         y_print=sim_spectrum['flux'] #sim_spectrum_flux
-        sens_out_file="sim_spectrum_%s.txt"%bandpass
+        sens_out_file=folder + "/sim_spectrum_%s.txt"%bandpass
         name_x='Lambda'
         name_y='Flux'
         wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
         
         x_print=outputwl/1.0e4
         y_print=1.0/outnoise**2 #error on the simulated spec -> inverted square of the RMS noise
-        sens_out_file="sim_spectrum_ivar_%s.txt"%bandpass
+        sens_out_file=folder + "/sim_spectrum_ivar_%s.txt"%bandpass
         name_x='Lambda'
         name_y='ivar'
         wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
                     
         x_print=outputwl/1.0e4
         y_print=spec_source*detectorconfig['N_dit']
-        sens_out_file="obj_spec/object_spectrum_%s.txt"%bandpass
+        sens_out_file=folder + "/obj_spec/object_spectrum_%s.txt"%bandpass
         name_x='Lambda'
         name_y='Flux'
         wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
@@ -888,7 +888,7 @@ def setup_magnitude(uservals):
             uservals['templ_wl_norm']=1.63
     return uservals
 
-def make_exposure(exp_type,uservals,params,config):
+def make_exposure(exp_type,uservals,params,config, folder):
     if uservals['moons_mode']=='HR':
         bands=['HR-RI','YJ','HR-H']
     if uservals['moons_mode']=='LR':
@@ -929,16 +929,16 @@ def make_exposure(exp_type,uservals,params,config):
         number_of_pixels=np.size(pixel_data['outputwl'])
         template_data,instrumentconfig=get_respow(instrumentconfig,telescopeconfig,template_data)
         sky_data=conv_sky(sky_data, min_wl, max_wl, template_data, uservals, pixel_data, instrumentconfig, detectorconfig)
-        SNR=make_simulation(exp_type,bandpass, pixel_data,sky_data, template_norm, template_data, uservals, detectorconfig, telescopeconfig, instrumentconfig,min_wl, max_wl) # resolution,wlr,t_aperture,sky_aperture,template_wl_norm,ab,airmass,npix,Instrument,ypix_fwhm,dit,eff_opt,seeing,atm_dif_ref)
+        SNR=make_simulation(exp_type,bandpass, pixel_data,sky_data, template_norm, template_data, uservals, detectorconfig, telescopeconfig, instrumentconfig,min_wl, max_wl, folder) # resolution,wlr,t_aperture,sky_aperture,template_wl_norm,ab,airmass,npix,Instrument,ypix_fwhm,dit,eff_opt,seeing,atm_dif_ref)
         print('Calculation completed for %s'%bandpass)
 
 
-def do_etc_calc():
+def do_etc_calc(folder):
     config=getConfig('app/static/Inst_setup/ConfigFile.ini')
     params= getParams('app/ParamFile.ini')
     uservals=get_input(params)   
     exp_type='target'
-    make_exposure(exp_type,uservals,params,config)
+    make_exposure(exp_type,uservals,params,config,folder)
 
 if __name__ == "__main__":
     config=getConfig('Inst_setup/ConfigFile.ini')
