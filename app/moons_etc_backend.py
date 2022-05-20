@@ -24,12 +24,18 @@ import sys
 def getConfig(ConfigFile):
     config = configparser.ConfigParser()
     read=config.read(ConfigFile)
-    print('Succesfully loaded Configuration file: ',read)
+    with open('info.html', 'w') as file:
+        file.write('Succesfully loaded Configuration file: ' + str(read) + \
+             '\nSuccesfully loaded Configuration file: ' + str(read))
+        print('Succesfully loaded Configuration file: ',read)
+        print('Succesfully loaded Configuration file: ',read)
     return config 
 
 def getParams(ParamFile):
     params = configparser.ConfigParser()
     read=params.read(ParamFile)
+    with open('info.html', 'a') as file:
+        file.write('\nSuccesfully loaded Parameter file: ' + str(read))
     print('Succesfully loaded Parameter file: ',read)
     return params 
 
@@ -68,8 +74,10 @@ def get_input(params):
 def calculate_ndits(uservals):
     uservals['N_dit']=int(uservals['exptime']/uservals['dit'])
     uservals['effective_exposure']=uservals['N_dit']*uservals['dit']
-    print('Number of IR detector DITs: %s'%uservals['N_dit'])
-    print('Total on source time in IR detectors: %s'%uservals['effective_exposure'])
+    with open('info.html', 'w') as file:
+        file.write('Number of IR detector DITs: %s'%uservals['N_dit'])
+        print('Number of IR detector DITs: %s'%uservals['N_dit'])
+        print('Total on source time in IR detectors: %s'%uservals['effective_exposure'])
     return uservals
 
 def calculate_texp(uservals):
@@ -935,7 +943,7 @@ def make_exposure(exp_type,uservals,params,config, folder):
 
 def do_etc_calc(folder):
     config=getConfig('app/static/Inst_setup/ConfigFile.ini')
-    params= getParams('app/ParamFile.ini')
+    params= getParams('app/static/user_files/' + folder +'/ParamFile.ini')
     uservals=get_input(params)   
     exp_type='target'
     make_exposure(exp_type,uservals,params,config,folder)
