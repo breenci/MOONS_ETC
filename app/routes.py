@@ -1,21 +1,32 @@
-from fileinput import filename
 from app import app
-from flask import redirect, render_template, send_file, send_from_directory, session
+from flask import redirect, render_template, send_from_directory
 import configparser
 from uuid import uuid4
 import os
+import shutil
 import numpy as np
-
-
 from app.make_plots import plot_folder
 from app.forms import ETC_form
 from app.moons_etc_backend import do_etc_calc
+
+
+def cleanup(path, file_limit):
+
+    dir_list = os.listdir(path)
+
+    full_dlist = [path + dir for dir in dir_list]
+
+    if len(dir_list) > file_limit:
+        oldest_dir = min(full_dlist, key=os.path.getctime)
+        print(oldest_dir)
+        shutil.rmtree(oldest_dir, ignore_errors=True)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = ETC_form()
     if form.validate_on_submit():
-
+        
         id = str(uuid4())[:5]
 
         fldr_list = ['SN', 'obj_spec', 'transmission']
@@ -57,6 +68,8 @@ def index():
             config.write(configfile)
 
         np.savetxt('app/static/user_files/'+ id +'/plot_selection.txt', plot_list)
+
+        cleanup('app/static/user_files/', 5)
 
         do_etc_calc(id)
 
