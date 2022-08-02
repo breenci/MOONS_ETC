@@ -21,12 +21,12 @@
             <div class="form-group col-md-3">
                 <h4> Instrument </h4>
                 <hr>
-                {{ wtf.form_field(form.mode, class='form-control') }}
+                {{ wtf.form_field(form.moons_mode, class='form-control') }}
             </div>
             <div class="form-group col-md-3">
                 <h4> Simulation </h4>
                 <hr>
-                {{ wtf.form_field(form.sky_temp, class='form-control') }}
+                {{ wtf.form_field(form.sky_template, class='form-control') }}
             </div>
             <div class="form-group col-md-3">
                 <h4> Conditions </h4>
@@ -42,7 +42,7 @@
                 {{ wtf.form_field(form.strategy, class='form-control') }}
             </div>
             <div class="form-group col-md-3">
-                {{ wtf.form_field(form.sky_res, class='form-control') }}
+                {{ wtf.form_field(form.sky_residual, class='form-control') }}
             </div>
             <div class="form-group col-md-3">
                 {{ wtf.form_field(form.airmass, class='form-control') }}
@@ -53,21 +53,21 @@
                 {{ wtf.form_field(form.filter, class='form-control') }}
             </div>
             <div class="form-group col-md-3">
-                {{ wtf.form_field(form.adc_refwave, class='form-control') }}
+                {{ wtf.form_field(form.atm_dif_ref, class='form-control') }}
             </div>
             <div class="form-group col-md-3">
-                {{ wtf.form_field(form.tell, class='form-control') }}
+                {{ wtf.form_field(form.telluric, class='form-control') }}
             </div>
         </div>
         <div class="row">
             <div class="form-group col-md-3">
-                {{ wtf.form_field(form.system, class='form-control') }}
+                {{ wtf.form_field(form.mag_system, class='form-control') }}
             </div>
             <div class="form-group col-md-3">
-                {{ wtf.form_field(form.exp_time, class='form-control') }}
+                {{ wtf.form_field(form.exptime, class='form-control') }}
             </div>
             <div class="form-group col-md-3">
-                {{ wtf.form_field(form.flux_cal, class='form-control') }}
+                {{ wtf.form_field(form.flux_calib, class='form-control') }}
             </div>
         </div>
         <div class="row">
@@ -75,7 +75,7 @@
                 {{ wtf.form_field(form.reddening, class='form-control') }}
             </div>
             <div class="form-group col-md-3">
-                {{ wtf.form_field(form.nexp, class='form-control') }}
+                {{ wtf.form_field(form.N_exp, class='form-control') }}
             </div>
         </div>
         <div class="row">

@@ -1,6 +1,6 @@
 from os import system
 from flask_wtf import FlaskForm
-from wtforms import SelectField, IntegerField, SubmitField, FloatField, BooleanField
+from wtforms import SelectField, IntegerField, SubmitField, FloatField, BooleanField, HiddenField
 from wtforms.validators import DataRequired
 
 
@@ -9,16 +9,16 @@ class ETC_form(FlaskForm):
     template_name = SelectField('Template', choices=[('app/static/Example_spectra/constant_in_wav.fits', 'constant_in_wav'), ('app/static/Example_spectra/input_stellar_template.fits', 'stellar')], validators=[DataRequired()])
     magnitude = FloatField('Magnitude', validators=[DataRequired()])
     filter = SelectField('Filter', choices=['H', 'J', 'I'], validators=[DataRequired()])
-    system = SelectField('System', choices=['AB', 'Vega'])
+    mag_system = SelectField('System', choices=['AB', 'Vega'])
     reddening = FloatField('Reddening')
     displacement = FloatField('Displacement')
 
     # instrument variables
-    mode = SelectField('Mode', choices=['HR', 'LR'],validators=[DataRequired()])
+    moons_mode = SelectField('Mode', choices=['HR', 'LR'],validators=[DataRequired()])
     strategy = SelectField('Strategy', choices=['Xswitch', 'Stare'], validators=[DataRequired()])
-    adc_refwave = FloatField('ADC_refwave')
-    exp_time = IntegerField('Exposure Time')
-    nexp = IntegerField('No. Exposures')
+    atm_dif_ref = FloatField('ADC_refwave')
+    exptime = IntegerField('Exposure Time')
+    N_exp = IntegerField('No. Exposures')
     dit = IntegerField('dit')
 
     #conditions
@@ -26,15 +26,22 @@ class ETC_form(FlaskForm):
     airmass = FloatField('Airmass',validators=[DataRequired()])
 
     #simulation
-    sky_temp = SelectField('Sky Template', choices=['eso_skycalc'], validators=[DataRequired()])
-    sky_res = IntegerField('Sky Residual',validators=[DataRequired()])
-    tell = IntegerField('Telluric')
-    flux_cal = FloatField('Flux Calib')
+    sky_template = SelectField('Sky Template', choices=['eso_skycalc'], validators=[DataRequired()])
+    sky_residual = IntegerField('Sky Residual',validators=[DataRequired()])
+    telluric = IntegerField('Telluric')
+    flux_calib = FloatField('Flux Calib')
 
-    #control
-    submit = SubmitField('Submit')
+    # hardcoded values
+    telescope = HiddenField('Telescope', default='VLT')
+    instrument = HiddenField('Instrument', default='MOONS')
+    set_line_profile = HiddenField('Set Line Profile', default='NO')
 
     #plot selection
     trans = BooleanField('Transmission')
     sn = BooleanField('Signal-to-Noise')
     obj_spec = BooleanField('Object Spectrum')
+
+    #control
+    submit = SubmitField('Submit')
+    
+

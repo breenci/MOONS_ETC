@@ -18,9 +18,9 @@ import matplotlib.pyplot as plt
 import math
 import csv
 import configparser
-import sys
 
-
+# Load the configuration file
+# No changes needed
 def getConfig(ConfigFile):
     config = configparser.ConfigParser()
     read=config.read(ConfigFile)
@@ -31,6 +31,9 @@ def getConfig(ConfigFile):
         print('Succesfully loaded Configuration file: ',read)
     return config 
 
+
+# load the parameter file generated from form. 
+# Can this be sent without file? DONE
 def getParams(ParamFile):
     params = configparser.ConfigParser()
     read=params.read(ParamFile)
@@ -39,6 +42,8 @@ def getParams(ParamFile):
     print('Succesfully loaded Parameter file: ',read)
     return params 
 
+
+# get vals from paramfile
 def get_input(params):
     uservals={}
     #hardcoded
@@ -70,6 +75,7 @@ def get_input(params):
 
     #configuration
     return uservals
+
 
 def calculate_ndits(uservals):
     uservals['N_dit']=int(uservals['exptime']/uservals['dit'])
@@ -941,11 +947,11 @@ def make_exposure(exp_type,uservals,params,config, folder):
         print('Calculation completed for %s'%bandpass)
 
 
-def do_etc_calc(folder):
+def do_etc_calc(folder, uservals):
     config=getConfig('app/static/Inst_setup/ConfigFile.ini')
-    params= getParams('app/static/user_files/' + folder +'/ParamFile.ini')
-    uservals=get_input(params)   
+    params= getParams('app/static/user_files/' + folder +'/ParamFile.ini')   
     exp_type='target'
+    uservals['airmass_fl'] = uservals['airmass']
     make_exposure(exp_type,uservals,params,config,folder)
 
 if __name__ == "__main__":
