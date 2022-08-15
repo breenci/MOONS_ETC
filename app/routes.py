@@ -1,6 +1,5 @@
 from app import app
 from flask import redirect, render_template, send_from_directory
-import configparser
 from uuid import uuid4
 import os
 import shutil
@@ -17,12 +16,13 @@ def cleanup(path, file_limit):
 
     # make paths absolute
     full_dlist = [path + dir for dir in dir_list]
-
-    # if there are too many files remove the oldest
-    if len(dir_list) > file_limit:
+    fcount = len(full_dlist)
+    # if there are too many files remove the oldest until under the limit
+    while fcount > file_limit:
         oldest_dir = min(full_dlist, key=os.path.getctime)
-        print(oldest_dir)
         shutil.rmtree(oldest_dir, ignore_errors=True)
+        full_dlist.remove(oldest_dir)
+        fcount -= 1
 
 
 # Homepage
