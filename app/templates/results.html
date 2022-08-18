@@ -10,6 +10,29 @@
 <div class="container-fluid">
     {% if is_plot[0] %}
     <div class="row">
+        <p class="h3 text-center"> Signal-to-Noise </p>
+        <div class="col-lg-4 text-center">
+            <h4> RI </h4>
+            <hr>
+            <a class="btn btn-primary" href="{{ url_for('send_report', filename=folder+'/SN/signal_to_noise_HR-RI.txt')}}" role="button">Download Text File</a>
+            <img src=static/user_files/{{folder}}/SN/signal_to_noise_HR-RI_plot.png class="img-responsive" alt=""> 
+        </div>
+        <div class="col-lg-4 text-center">
+            <h4> YJ </h4>
+            <hr>
+            <a class="btn btn-primary" href="{{ url_for('send_report', filename=folder+'/SN/signal_to_noise_YJ.txt')}}" role="button">Download Text File</a>
+            <img src=static/user_files/{{folder}}/SN/signal_to_noise_YJ_plot.png class="img-responsive" alt=""> 
+        </div>
+        <div class="col-lg-4 text-center">
+            <h4> H </h4>
+            <hr>
+            <a class="btn btn-primary" href="{{ url_for('send_report', filename=folder+'/SN/signal_to_noise_HR-H.txt')}}" role="button">Download Text File</a>
+            <img src=static/user_files/{{folder}}/SN/signal_to_noise_HR-H_plot.png class="img-responsive" alt="">
+        </div>
+    </div>
+    {% endif %}
+    {% if is_plot[1] %}
+    <div class="row">
         <p class="h3 text-center"> Transmission </p>
         <div class="col-lg-4 text-center">
             <h4> RI </h4>
@@ -18,42 +41,19 @@
             <img src=static/user_files/{{folder}}/transmission/Transmission_HR-RI_plot.png class="img-responsive" alt=""> 
         </div>
         <div class="col-lg-4 text-center">
-            <h4> H </h4>
-            <hr>
-            <a class="btn btn-primary" href="{{ url_for('send_report', filename=folder+'/transmission/Transmission_HR-H.txt')}}" role="button">Download Text File</a>
-            <img src=static/user_files/{{folder}}/transmission/Transmission_HR-H_plot.png class="img-responsive" alt=""> 
-        </div>
-        <div class="col-lg-4 text-center">
             <h4> YJ </h4>
             <hr>
             <a class="btn btn-primary" href="{{ url_for('send_report', filename=folder+'/transmission/Transmission_YJ.txt')}}" role="button">Download Text File</a>
             <img src=static/user_files/{{folder}}/transmission/Transmission_YJ_plot.png class="img-responsive" alt=""> 
         </div>
-    </div>
-    <hr>
-    {% endif %}
-    {% if is_plot[1] %}
-    <div class="row">
-        <p class="h3 text-center"> SN </p>
-        <div class="col-lg-4 text-center">
-            <h4> RI </h4>
-            <hr>
-            <a class="btn btn-primary" href="{{ url_for('send_report', filename=folder+'/SN/signal_to_noise_HR-RI.txt')}}" role="button">Download Text File</a>
-            <img src=static/user_files/{{folder}}/SN/signal_to_noise_HR-RI_plot.png class="img-responsive" alt=""> 
-        </div>
         <div class="col-lg-4 text-center">
             <h4> H </h4>
             <hr>
-            <a class="btn btn-primary" href="{{ url_for('send_report', filename=folder+'/SN/signal_to_noise_HR-H.txt')}}" role="button">Download Text File</a>
-            <img src=static/user_files/{{folder}}/SN/signal_to_noise_HR-H_plot.png class="img-responsive" alt=""> 
-        </div>
-        <div class="col-lg-4 text-center">
-            <h4> YJ </h4>
-            <hr>
-            <a class="btn btn-primary" href="{{ url_for('send_report', filename=folder+'/SN/signal_to_noise_YJ.txt')}}" role="button">Download Text File</a>
-            <img src=static/user_files/{{folder}}/SN/signal_to_noise_YJ_plot.png class="img-responsive" alt=""> 
+            <a class="btn btn-primary" href="{{ url_for('send_report', filename=folder+'/transmission/Transmission_HR-H.txt')}}" role="button">Download Text File</a>
+            <img src=static/user_files/{{folder}}/transmission/Transmission_HR-H_plot.png class="img-responsive" alt=""> 
         </div>
     </div>
+    <hr>
     {% endif %}
     {% if is_plot[2] %}
     <div class="row">
@@ -65,16 +65,16 @@
             <img src=static/user_files/{{folder}}/obj_spec/object_spectrum_HR-RI_plot.png class="img-responsive" alt=""> 
         </div>
         <div class="col-lg-4 text-center">
-            <h4> H </h4>
-            <hr>
-            <a class="btn btn-primary" href="{{ url_for('send_report', filename=folder+'/obj_spec/object_spectrum_HR-H.txt')}}" role="button">Download Text File</a>
-            <img src=static/user_files/{{folder}}/obj_spec/object_spectrum_HR-H_plot.png class="img-responsive" alt=""> 
-        </div>
-        <div class="col-lg-4 text-center">
             <h4> YJ </h4>
             <hr>
             <a class="btn btn-primary" href="{{ url_for('send_report', filename=folder+'/obj_spec/object_spectrum_YJ.txt')}}" role="button">Download Text File</a>
             <img src=static/user_files/{{folder}}/obj_spec/object_spectrum_YJ_plot.png class="img-responsive" alt=""> 
+        </div>
+        <div class="col-lg-4 text-center">
+            <h4> H </h4>
+            <hr>
+            <a class="btn btn-primary" href="{{ url_for('send_report', filename=folder+'/obj_spec/object_spectrum_HR-H.txt')}}" role="button">Download Text File</a>
+            <img src=static/user_files/{{folder}}/obj_spec/object_spectrum_HR-H_plot.png class="img-responsive" alt=""> 
         </div>
     </div>
     {% endif %}
