@@ -1,7 +1,7 @@
 from os import system
 from flask_wtf import FlaskForm
 from wtforms import SelectField, IntegerField, SubmitField, FloatField, BooleanField, HiddenField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, NumberRange
 
 
 class ETC_form(FlaskForm):
@@ -10,26 +10,26 @@ class ETC_form(FlaskForm):
     magnitude = FloatField('Magnitude', validators=[DataRequired()])
     filter = SelectField('Filter', choices=['H', 'J', 'I'], validators=[DataRequired()])
     mag_system = SelectField('System', choices=['AB', 'Vega'])
-    reddening = FloatField('Reddening')
-    displacement = FloatField('Displacement')
+    reddening = FloatField('Reddening E(B-V)')
+    displacement = FloatField('Fibre to Target Displacement')
 
     # instrument variables
-    moons_mode = SelectField('Mode', choices=['HR', 'LR'],validators=[DataRequired()])
+    moons_mode = SelectField('Mode', choices=['HR', 'LR'], validators=[DataRequired()])
     strategy = SelectField('Strategy', choices=['Xswitch', 'Stare'], validators=[DataRequired()])
-    atm_dif_ref = FloatField('ADC_refwave')
-    exptime = IntegerField('Exposure Time')
+    atm_dif_ref = FloatField('Ref. Wavelength for AD Correction', validators=[DataRequired(), NumberRange(min=0.57, max=1.8)])
+    exptime = IntegerField('Exposure Time (s)')
     N_exp = IntegerField('No. Exposures')
-    dit = IntegerField('dit')
+    dit = IntegerField('NDIT')
 
     #conditions
-    seeing = FloatField('Seeing', validators=[DataRequired()])
+    seeing = FloatField('Seeing (arcsec)', validators=[DataRequired()])
     airmass = FloatField('Airmass',validators=[DataRequired()])
 
     #simulation
     sky_template = SelectField('Sky Template', choices=['eso_skycalc'], validators=[DataRequired()])
-    sky_residual = IntegerField('Sky Residual',validators=[DataRequired()])
-    telluric = IntegerField('Telluric')
-    flux_calib = FloatField('Flux Calib')
+    sky_residual = IntegerField('Additional Sky Residual (%)',validators=[DataRequired(), NumberRange(min=0, max=100)])
+    telluric = IntegerField('Telluric Correction')
+    flux_calib = SelectField('Flux Calib', choices=[0,1])
 
     # hardcoded values
     telescope = HiddenField('Telescope', default='VLT')
