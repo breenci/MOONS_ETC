@@ -747,7 +747,7 @@ def make_simulation(exp_type,bandpass, pixel_data,sky_data,template_norm, templa
             name_y='Flux'
             wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)   
             
-            ratio_flux=get_standard_calibration(template_data,bandpass)
+            ratio_flux=get_standard_calibration(template_data,bandpass, folder)
             x_print=outputwl/1.0e4
             y_print=sim_spectrum_flux/ratio_flux #sim_spectrum_flux
             sens_out_file= folder + "/sim_spectrum_fluxcalibrated_%s.txt"%bandpass
@@ -800,6 +800,8 @@ def make_simulation(exp_type,bandpass, pixel_data,sky_data,template_norm, templa
             wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)
 
     if uservals['flux_calib']!=1:
+
+        print('test')
         
         x_print=outputwl/1.0e4
         y_print=sim_spectrum_flux #sim_spectrum_flux
@@ -808,7 +810,7 @@ def make_simulation(exp_type,bandpass, pixel_data,sky_data,template_norm, templa
         name_y='Flux'
         wrotefile=write_out_file(x_print, y_print, name_x, name_y, sens_out_file)   
             
-        ratio_flux=get_standard_calibration(template_data,bandpass)
+        ratio_flux=get_standard_calibration(template_data,bandpass, folder)
         x_print=outputwl/1.0e4
         y_print=sim_spectrum_flux/ratio_flux #sim_spectrum_flux
         sens_out_file=folder + "/sim_spectrum_fluxcalibrated_%s.txt"%bandpass
@@ -860,8 +862,9 @@ def make_simulation(exp_type,bandpass, pixel_data,sky_data,template_norm, templa
 
     return sn_central
 
-def get_standard_calibration(template_data, bandpass):
-    standard_obs=ascii.read('app/static/standard_flux_%s.txt'%bandpass)
+def get_standard_calibration(template_data, bandpass, folder):
+
+    standard_obs=ascii.read('app/static/user_files/' + folder +'/standard_flux_%s.txt'%bandpass)
     standard_obs_wave=standard_obs['Lambda']
     standard_obs_flux=standard_obs['Flux']    
     standard_tab_wave=template_data['wave']
