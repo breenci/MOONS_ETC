@@ -1,5 +1,6 @@
+#from urllib import request
 from app import app
-from flask import redirect, render_template, send_from_directory
+from flask import redirect, render_template, send_from_directory, request
 from uuid import uuid4
 import os
 import shutil
@@ -33,9 +34,9 @@ def index():
 
     # if the form runs without error to the etc calcs and store result
     if form.validate_on_submit():
-        
+
         # unique id for the user
-        id = str(uuid4())[:5]
+        id = str(uuid4())
 
         # make user directory
         fldr_list = ['SN', 'obj_spec', 'transmission']
@@ -44,6 +45,15 @@ def index():
             if os.path.exists(path) == False:
                 os.makedirs(path)
 
+        # get uploaded file
+        uploaded_template = request.files[form.upload_template.name]
+
+
+        if form.upload_template.data != None:
+            uploaded_template.save('app/static/user_files/' + id + '/uploaded_template.fits')
+            form.template_name.data = 'app/static/user_files/' + id + '/uploaded_template.fits'
+
+        print(form.template_name.data)
         # check which data needs to be plotted and save the result
         plot_list = np.array([form.sn.data, form.trans.data, form.obj_spec.data])
         np.savetxt('app/static/user_files/'+ id +'/plot_selection.txt', plot_list)
@@ -55,6 +65,7 @@ def index():
         do_etc_calc(id, form.data)
 
         # plot the necessary data
+        # this should be done by the backend (or plotly)
         for fldr in fldr_list:
             plot_folder('app/static/user_files/'+ id +'/' + fldr)
 

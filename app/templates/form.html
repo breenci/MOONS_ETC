@@ -10,7 +10,7 @@
 <div class="container">
     <h3>MOONS Exposure Time Calculator</h3>
     <hr>
-    <form action="" method="post" class="form" role="form">
+    <form action="" method="post" class="form" role="form", enctype="multipart/form-data">
     {{ form.csrf_token() }}
         <div class="row">
             <div class="form-group col-md-3">
@@ -85,6 +85,11 @@
             <div class="form-group col-md-3">
                 {{ wtf.form_field(form.dit, class='form-control') }}
             </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-3">
+                {{ wtf.form_field(form.upload_template, class='form-control') }}
+            <div>
         </div>
         <h4>Plots to Display</h4>
         {{ wtf.form_field(form.sn, class='form-control') }}

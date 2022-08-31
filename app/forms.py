@@ -1,12 +1,15 @@
 from os import system
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField
 from wtforms import SelectField, IntegerField, SubmitField, FloatField, BooleanField, HiddenField
 from wtforms.validators import DataRequired, NumberRange
 
 
 class ETC_form(FlaskForm):
     # target variables
-    template_name = SelectField('Template', choices=[('app/static/Example_spectra/constant_in_wav.fits', 'constant_in_wav'), ('app/static/Example_spectra/input_stellar_template.fits', 'stellar')], validators=[DataRequired()])
+    template_name = SelectField('Template', choices=[('app/static/Example_spectra/constant_in_wav.fits', 'constant_in_wav'), 
+                    ('app/static/Example_spectra/input_stellar_template.fits', 'stellar')], validators=[DataRequired()])
+    upload_template = FileField('Template Upload')
     magnitude = FloatField('Magnitude', validators=[DataRequired()])
     filter = SelectField('Filter', choices=['H', 'J', 'I'], validators=[DataRequired()])
     mag_system = SelectField('System', choices=['AB', 'Vega'])
