@@ -16,7 +16,7 @@
             <div class="form-group col-md-3">
                 <h4> Target </h4>
                 <hr>
-                {{ wtf.form_field(form.template_name, class='form-control') }}
+                {{ wtf.form_field(form.template_name, class='form-control', type='file') }}
             </div>
             <div class="form-group col-md-3">
                 <h4> Instrument </h4>
@@ -36,7 +36,7 @@
         </div>
         <div class="row">
             <div class="form-group col-md-3">
-                {{ wtf.form_field(form.magnitude, class='form-control') }}
+                {{ wtf.form_field(form.upload_template, class='form-control') }}
             </div>
             <div class="form-group col-md-3">
                 {{ wtf.form_field(form.strategy, class='form-control') }}
@@ -88,8 +88,8 @@
         </div>
         <div class="row">
             <div class="form-group col-md-3">
-                {{ wtf.form_field(form.upload_template, class='form-control') }}
-            <div>
+                {{ wtf.form_field(form.magnitude, class='form-control') }}
+            </div>
         </div>
         <h4>Plots to Display</h4>
         {{ wtf.form_field(form.sn, class='form-control') }}
