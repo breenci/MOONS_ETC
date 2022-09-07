@@ -45,17 +45,17 @@ def index():
             if os.path.exists(path) == False:
                 os.makedirs(path)
 
-        # get uploaded file
-        uploaded_template = request.files[form.upload_template.name]
-
 
         if form.upload_template.data != None:
+            # get uploaded file
+            uploaded_template = request.files[form.upload_template.name]
             uploaded_template.save('app/static/user_files/' + id + '/uploaded_template.fits')
             form.template_name.data = 'app/static/user_files/' + id + '/uploaded_template.fits'
 
         print(form.template_name.data)
         # check which data needs to be plotted and save the result
         plot_list = np.array([form.sn.data, form.trans.data, form.obj_spec.data])
+
         np.savetxt('app/static/user_files/'+ id +'/plot_selection.txt', plot_list)
 
         # do cleanup if required
@@ -71,6 +71,7 @@ def index():
 
         # redirect to results page
         return redirect('/' + id)
+
 
     return render_template('form.html', form=form)
 
