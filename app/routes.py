@@ -1,6 +1,6 @@
 #from urllib import request
 from app import app
-from flask import redirect, render_template, send_from_directory, request
+from flask import redirect, render_template, send_from_directory, request, session
 from uuid import uuid4
 import os
 import shutil
@@ -52,10 +52,8 @@ def index():
             uploaded_template.save('app/static/user_files/' + id + '/uploaded_template.fits')
             form.template_name.data = 'app/static/user_files/' + id + '/uploaded_template.fits'
 
-        print(form.template_name.data)
         # check which data needs to be plotted and save the result
         plot_list = np.array([form.sn.data, form.trans.data, form.obj_spec.data])
-
         np.savetxt('app/static/user_files/'+ id +'/plot_selection.txt', plot_list)
 
         # do cleanup if required
@@ -70,17 +68,17 @@ def index():
             plot_folder('app/static/user_files/'+ id +'/' + fldr)
 
         # redirect to results page
-        return redirect('/' + id)
-
+        return redirect('/results/' + id)
 
     return render_template('form.html', form=form)
 
 
 # results page. Unique to user
-@app.route('/<user_folder>')
+@app.route('/results/<user_folder>')
 def results(user_folder):
     is_plot = np.loadtxt('app/static/user_files/' + user_folder + '/plot_selection.txt')
     return render_template('results.html', is_plot=is_plot, folder=user_folder)
+
 
 # make data avaialble for download
 @app.route('/get-txt/<path:filename>')
