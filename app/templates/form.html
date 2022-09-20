@@ -1,109 +1,128 @@
-{% extends "bootstrap/base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
-
-{% block title %}
-    MOONS ETC
-{% endblock %}
-
-{% block scripts %}
-    {{super()}}
-    <script>
-        $("#template_type").on("click", function() {
-        $("#template_name").prop('disabled', (i, v) => !v);
-        $("#upload_template").prop('disabled', (i, v) => !v);
-    })
-    </script>
-{% endblock %}
+{% extends "base.html" %}
+{% from "_formhelp.html" import render_field %}
 
 {% block content %}
-
 <div class="container">
     <h3>MOONS Exposure Time Calculator</h3>
     <hr>
-    <form action="" method="post" class="form" role="form", enctype="multipart/form-data", autocomplete="off">
+    <form action="" method="post" class="form" role="form", enctype="multipart/form-data", autocomplete="off" novalidate>
     {{ form.csrf_token() }}
-        <div class="row">
-            <div class="form-group col-md-3">
-                <h4> Target </h4>
-                <hr>
-                {{ wtf.form_field(form.template_name, class='form-control', disabled=form.template_type.data) }}
-                {{ wtf.form_field(form.template_type, class='form-control') }}
-                {{ wtf.form_field(form.upload_template, class='form-control', disabled=(not form.template_type.data)) }}
+        <div class="row align-items-center">
+            <div class="col-2 border-end">
+                <h4>Template:</h4>
             </div>
-            <div class="form-group col-md-3">
-                <h4> Instrument </h4>
-                <hr>
-                {{ wtf.form_field(form.moons_mode, class='form-control') }}
+            <div class="col-3 border-end">
+                {{ render_field(form.template_name, disabled=form.template_type.data) }}
+                <div class="input-group">
+                    <div class="input-group-text">
+                    {{ render_field(form.template_type, class="form-check-input mt-0", type="checkbox")}} 
+                    </div>
+                    {% if form.upload_template.errors %}
+                        {{ form.upload_template(class="form-control is-invalid", type="file", disabled=(not form.template_type.data)) }}
+                        {% for error in form.upload_template.errors %}
+                             <div class="invalid-feedback">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        {{ form.upload_template(class="form-control", type="file", disabled=(not form.template_type.data)) }}
+                    {% endif %}        
+                </div>
             </div>
-            <div class="form-group col-md-3">
-                <h4> Simulation </h4>
-                <hr>
-                {{ wtf.form_field(form.sky_template, class='form-control') }}
+            <div class="col-1 border-end">
+                {{ render_field(form.magnitude) }}
             </div>
-            <div class="form-group col-md-3">
-                <h4> Conditions </h4>
-                <hr>
-                {{ wtf.form_field(form.seeing, class='form-control') }}
+            <div class="col-1 border-end">
+                {{ render_field(form.filter) }}
             </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-3">
-                {{ wtf.form_field(form.magnitude, class='form-control') }}
+            <div class="col-1 border-end">
+                {{ render_field(form.mag_system) }}
             </div>
-            <div class="form-group col-md-3">
-                {{ wtf.form_field(form.strategy, class='form-control') }}
+            <div class="col-1 border-end">
+                {{ render_field(form.reddening) }}
             </div>
-            <div class="form-group col-md-3">
-                {{ wtf.form_field(form.sky_residual, class='form-control') }}
-            </div>
-            <div class="form-group col-md-3">
-                {{ wtf.form_field(form.airmass, class='form-control') }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-3">
-                {{ wtf.form_field(form.filter, class='form-control') }}
-            </div>
-            <div class="form-group col-md-3">
-                {{ wtf.form_field(form.atm_dif_ref, class='form-control') }}
-            </div>
-            <div class="form-group col-md-3">
-                {{ wtf.form_field(form.telluric, class='form-control') }}
+            <div class="col-2 border-end">
+                {{ render_field(form.displacement) }}
             </div>
         </div>
-        <div class="row">
-            <div class="form-group col-md-3">
-                {{ wtf.form_field(form.mag_system, class='form-control') }}
+        <hr>
+        <div class="row align-items-center">
+            <div class="col-2 border-end">
+                <h4>Instrument:</h4>
             </div>
-            <div class="form-group col-md-3">
-                {{ wtf.form_field(form.exptime, class='form-control') }}
+            <div class="col-1 border-end">
+                {{ render_field(form.moons_mode) }}
             </div>
-            <div class="form-group col-md-3">
-                {{ wtf.form_field(form.flux_calib, class='form-control') }}
+            <div class="col-2 border-end">
+                {{ render_field(form.strategy) }}
             </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-3">
-                {{ wtf.form_field(form.reddening, class='form-control') }}
+            <div class="col-2 border-end">
+                {{ render_field(form.atm_dif_ref) }}
             </div>
-            <div class="form-group col-md-3">
-                {{ wtf.form_field(form.N_exp, class='form-control') }}
+            <div class="col-1 border-end">
+                {{ render_field(form.exptime) }}
             </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-3">
-                {{ wtf.form_field(form.displacement, class='form-control') }}
+            <div class="col-1 border-end">
+                {{ render_field(form.N_exp) }}
             </div>
-            <div class="form-group col-md-3">
-                {{ wtf.form_field(form.dit, class='form-control') }}
+            <div class="col-1 border-end">
+                {{ render_field(form.dit) }}
             </div>
         </div>
-
-        <h4>Plots to Display</h4>
-        {{ wtf.form_field(form.sn, class='form-control') }}
-        {{ wtf.form_field(form.trans, class='form-control') }}
-        {{ wtf.form_field(form.obj_spec, class='form-control') }}
-        {{ wtf.form_field(form.submit, button_map={'submit':'primary'}) }}
+        <hr>
+        <div class="row align-items-center">
+            <div class="col-2 border-end">
+                <h4>Simulation:</h4>
+            </div>
+            <div class="col-3 border-end">
+                {{ render_field(form.sky_template) }}
+            </div>
+            <div class="col-3 border-end">
+                {{ render_field(form.sky_residual) }}
+            </div>
+            <div class="col-2 border-end">
+                {{ render_field(form.telluric) }}
+            </div>
+            <div class="col-1 border-end">
+                {{ render_field(form.flux_calib) }}
+            </div>
+        </div>
+        <hr>
+        <div class="row align-items-center">
+            <div class="col-2 border-end">
+                <h4>Conditions:</h4>
+            </div>
+            <div class="col-2 border-end">
+                {{ render_field(form.seeing) }}
+            </div>
+            <div class="col-2 border-end">
+                {{ render_field(form.airmass) }}
+            </div>
+        </div>
+        <hr>
+        <div class="row align-items-center">
+            <div class="col-2 border-end">
+                <h4>Plots to Display:</h4>
+            </div>
+            <div class="col-2 border-end">
+                {{ render_field(form.sn, class="form-check-input", type="checkbox") }} <br>
+                {{ render_field(form.trans, class="form-check-input", type="checkbox") }} <br>
+                {{ render_field(form.obj_spec, class="form-check-input", type="checkbox") }}
+            </div>
+        </div>
+        <hr>
+        {{ form.submit(class="btn btn-primary", type="submit") }}
     </form>
 </div>
 {% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    $("#template_type").on("click", function() {
+    $("#template_name").prop('disabled', (i, v) => !v);
+    $("#upload_template").prop('disabled', (i, v) => !v);
+})
+</script>
+{% endblock %}
+

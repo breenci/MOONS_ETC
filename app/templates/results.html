@@ -1,11 +1,7 @@
-{% extends "bootstrap/base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
-
-{% block title %}
-    MOONS ETC
-{% endblock %}
+{% extends "base.html" %}
 
 
+{{ user_folder }}
 {% block content %}
 <div class="container-fluid">
     {% if is_plot[0] %}
@@ -15,19 +11,19 @@
             <h4> RI </h4>
             <hr>
             <a class="btn btn-primary" href="{{ url_for('send_report', filename=folder+'/SN/signal_to_noise_HR-RI.txt')}}" role="button">Download Text File</a>
-            <img src=static/user_files/{{folder}}/SN/signal_to_noise_HR-RI_plot.png class="img-responsive" alt=""> 
+            <img src=/static/user_files/{{folder}}/SN/signal_to_noise_HR-RI_plot.png class="img-responsive" alt=""> 
         </div>
         <div class="col-lg-4 text-center">
             <h4> YJ </h4>
             <hr>
             <a class="btn btn-primary" href="{{ url_for('send_report', filename=folder+'/SN/signal_to_noise_YJ.txt')}}" role="button">Download Text File</a>
-            <img src=static/user_files/{{folder}}/SN/signal_to_noise_YJ_plot.png class="img-responsive" alt=""> 
+            <img src=/static/user_files/{{folder}}/SN/signal_to_noise_YJ_plot.png class="img-responsive" alt=""> 
         </div>
         <div class="col-lg-4 text-center">
             <h4> H </h4>
             <hr>
             <a class="btn btn-primary" href="{{ url_for('send_report', filename=folder+'/SN/signal_to_noise_HR-H.txt')}}" role="button">Download Text File</a>
-            <img src=static/user_files/{{folder}}/SN/signal_to_noise_HR-H_plot.png class="img-responsive" alt="">
+            <img src=/static/user_files/{{folder}}/SN/signal_to_noise_HR-H_plot.png class="img-responsive" alt="">
         </div>
     </div>
     {% endif %}

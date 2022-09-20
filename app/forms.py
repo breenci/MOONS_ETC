@@ -2,22 +2,12 @@ from email.policy import default
 from os import system
 from typing import Optional
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField
+from flask_wtf.file import FileField, FileAllowed
 from wtforms import SelectField, IntegerField, SubmitField, FloatField, BooleanField, HiddenField, FormField, FieldList, RadioField
 from wtforms.validators import DataRequired, NumberRange, ValidationError, Optional
 
 
 class UploadRequired:
-    """
-    Compares the values of two fields.
-
-    :param fieldname:
-        The name of the other field to compare to.
-    :param message:
-        Error message to raise in case of a validation error. Can be
-        interpolated with `%(other_label)s` and `%(other_name)s` to provide a
-        more helpful error.
-    """
 
     def __init__(self, fieldname, message=None):
         self.fieldname = fieldname
@@ -31,8 +21,10 @@ class UploadRequired:
                 field.gettext("Invalid field name '%s'.") % self.fieldname
             ) from exc
         if other.data == False:
+            print('Not selected')
             return
         elif field.data:
+            print('There is data')
             return
 
         message = self.message
@@ -44,10 +36,10 @@ class UploadRequired:
 
 class ETC_form(FlaskForm):
     # target variables
-    template_type = BooleanField('Or Upload Template')
-    template_name = SelectField('Template (Defaults)', choices=[('app/static/Example_spectra/constant_in_wav.fits', 'constant_in_wav'), 
+    template_type = BooleanField('')
+    template_name = SelectField('Template', choices=[('app/static/Example_spectra/constant_in_wav.fits', 'constant_in_wav'), 
                     ('app/static/Example_spectra/input_stellar_template.fits', 'stellar')], validators=[Optional()])
-    upload_template = FileField('', validators=[Optional(), UploadRequired('template_type')])
+    upload_template = FileField('', validators=[ UploadRequired('template_type'), FileAllowed(['.fits'])])
 
     magnitude = FloatField('Magnitude', validators=[DataRequired()])
     filter = SelectField('Magnitude Band', choices=['H', 'J', 'I'], validators=[DataRequired()])
