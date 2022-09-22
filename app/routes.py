@@ -1,6 +1,6 @@
 #from urllib import request
 from app import app
-from flask import redirect, render_template, send_from_directory, request, session
+from flask import redirect, render_template, send_from_directory, request
 from uuid import uuid4
 import os
 import shutil
@@ -8,6 +8,10 @@ import numpy as np
 from app.make_plots import plot_folder
 from app.forms import ETC_form
 from app.moons_etc_backend import do_etc_calc
+import plotly.graph_objects as go
+import glob
+import json
+import plotly
 
 
 def cleanup(path, file_limit):
@@ -73,15 +77,44 @@ def index():
     return render_template('form.html', form=form)
 
 
-# results page. Unique to user
-@app.route('/results/<user_folder>')
-def results(user_folder):
-    is_plot = np.loadtxt('app/static/user_files/' + user_folder + '/plot_selection.txt')
-    return render_template('results.html', is_plot=is_plot, folder=user_folder)
-
-
 # make data avaialble for download
 @app.route('/get-txt/<path:filename>')
 def send_report(filename):
     return send_from_directory('static/user_files', filename, as_attachment=True)
 
+
+@app.route('/callback', methods=['POST', 'GET'])
+def cb():
+    print(request.args.get('data'))
+    return make_plot(request.args.get('folder'), request.args.get('data'))
+
+
+@app.route('/results/<user_folder>')
+def results2(user_folder):
+    return render_template('results.html', graphJSON=make_plot(user_folder), folder=user_folder)
+
+
+def make_plot(user_folder, plot_type='SN'):
+    file_list = glob.glob('app/static/user_files/'+user_folder+'/'+plot_type+'/*.txt')
+    print(user_folder+'/'+plot_type+'/*.txt')
+
+    fig = go.Figure()
+    for file in file_list:
+        data = np.loadtxt(file)
+        wl = data[1:,0]
+        snr = data[1:,1]
+        if wl[0] < 0.934:
+            fig.add_trace(go.Scatter(x=wl, y=snr, mode='lines', name='RI',
+            line=dict(color='red', width=.5)))
+        elif wl[0] > 1.45:
+            fig.add_trace(go.Scatter(x=wl, y=snr, mode='lines', name='H',
+            line=dict(color='blue', width=.5)))
+        else:
+            fig.add_trace(go.Scatter(x=wl, y=snr, mode='lines', name='YJ',
+            line=dict(color='magenta', width=.5)))
+    
+    fig.update_layout(xaxis_title='Wavelength / micron',
+                   yaxis_title=plot_type, height=800, width=1200)
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+    return graphJSON
