@@ -9,11 +9,18 @@
                 Plotly.newPlot('chart', result, {staticPlot: true});;
             }
         });
-        if (selection == 'transmission') { 
-        $("#RI").prop("href", "{{ url_for('send_report', filename=folder+'/transmission/Transmission_HR-RI.txt')}}");
+        if (selection == 'transmission') {
+        $("#RI").prop("href", "{{ url_for('send_report', filename=folder+'/transmission/Transmission_*-RI.txt')}}");
         $("#YJ").prop("href", "{{ url_for('send_report', filename=folder+'/transmission/Transmission_YJ.txt')}}");
-        $("#H").prop("href", "{{ url_for('send_report', filename=folder+'/transmission/Transmission_HR-.txt')}}")};
-
+        $("#H").prop("href", "{{ url_for('send_report', filename=folder+'/transmission/Transmission_*-H.txt')}}")};
+        if (selection == 'SN') {
+        $("#RI").prop("href", "{{ url_for('send_report', filename=folder+'/SN/signal_to_noise_*-RI.txt')}}");
+        $("#YJ").prop("href", "{{ url_for('send_report', filename=folder+'/SN/signal_to_noise_YJ.txt')}}");
+        $("#H").prop("href", "{{ url_for('send_report', filename=folder+'/SN/signal_to_noise_*-H.txt')}}")};
+        if (selection == 'obj_spec') {
+        $("#RI").prop("href", "{{ url_for('send_report', filename=folder+'/obj_spec/object_spectrum_*-RI.txt')}}");
+        $("#YJ").prop("href", "{{ url_for('send_report', filename=folder+'/obj_spec/object_spectrum_YJ.txt')}}");
+        $("#H").prop("href", "{{ url_for('send_report', filename=folder+'/obj_spec/object_spectrum_*-H.txt')}}")};
     }
 </script>
 

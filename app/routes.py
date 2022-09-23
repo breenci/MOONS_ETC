@@ -71,7 +71,8 @@ def index():
 # make data avaialble for download
 @app.route('/get-txt/<path:filename>')
 def send_report(filename):
-    return send_from_directory('static/user_files', filename, as_attachment=True)
+    rel_path = os.path.relpath(glob.glob('app/static/user_files/' + filename)[0], start='app/static/user_files')
+    return send_from_directory('static/user_files', rel_path, as_attachment=True)
 
 
 @app.route('/callback', methods=['POST', 'GET'])
