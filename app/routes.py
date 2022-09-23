@@ -56,20 +56,11 @@ def index():
             uploaded_template.save('app/static/user_files/' + id + '/uploaded_template.fits')
             form.template_name.data = 'app/static/user_files/' + id + '/uploaded_template.fits'
 
-        # check which data needs to be plotted and save the result
-        plot_list = np.array([form.sn.data, form.trans.data, form.obj_spec.data])
-        np.savetxt('app/static/user_files/'+ id +'/plot_selection.txt', plot_list)
-
         # do cleanup if required
         cleanup('app/static/user_files/', 5)
 
         # do etc calculations with form input
         do_etc_calc(id, form.data)
-
-        # plot the necessary data
-        # this should be done by the backend (or plotly)
-        for fldr in fldr_list:
-            plot_folder('app/static/user_files/'+ id +'/' + fldr)
 
         # redirect to results page
         return redirect('/results/' + id)

@@ -100,17 +100,6 @@
             </div>
         </div>
         <hr>
-        <div class="row align-items-center">
-            <div class="col-2 border-end">
-                <h4>Plots to Display:</h4>
-            </div>
-            <div class="col-2 border-end">
-                {{ render_field(form.sn, class="form-check-input", type="checkbox") }} <br>
-                {{ render_field(form.trans, class="form-check-input", type="checkbox") }} <br>
-                {{ render_field(form.obj_spec, class="form-check-input", type="checkbox") }}
-            </div>
-        </div>
-        <hr>
         {{ form.submit(class="btn btn-primary", type="submit") }}
     </form>
 </div>

@@ -70,11 +70,6 @@ class ETC_form(FlaskForm):
     instrument = HiddenField('Instrument', default='MOONS')
     set_line_profile = HiddenField('Set Line Profile', default='NO')
 
-    #plot selection
-    trans = BooleanField('Transmission')
-    sn = BooleanField('Signal-to-Noise')
-    obj_spec = BooleanField('Object Spectrum')
-
     #control
     submit = SubmitField('Submit')
 
