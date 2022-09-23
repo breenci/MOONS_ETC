@@ -105,8 +105,16 @@ def make_plot(user_folder, plot_type='SN'):
             fig.add_trace(go.Scatter(x=wl, y=snr, mode='lines', name='YJ',
             line=dict(color='magenta', width=.5)))
     
-    fig.update_layout(xaxis_title='Wavelength / micron',
-                   yaxis_title=plot_type, height=800, width=1200)
+    if plot_type == 'SN':
+        fig.update_layout(xaxis_title='Wavelength / micron',
+                    yaxis_title='SNR', height=800, width=1200)
+    if plot_type == 'transmission':
+        fig.update_layout(xaxis_title='Wavelength / micron',
+                    yaxis_title='Transmission', height=800, width=1200)
+    if plot_type == 'obj_spec':
+        fig.update_layout(xaxis_title='Wavelength / micron',
+                    yaxis_title='Object Spectrum', height=800, width=1200)
+
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
     return graphJSON
