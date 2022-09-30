@@ -39,7 +39,7 @@ class ETC_form(FlaskForm):
     template_type = BooleanField('')
     template_name = SelectField('Template', choices=[('app/static/Example_spectra/constant_in_wav.fits', 'constant_in_wav'), 
                     ('app/static/Example_spectra/input_stellar_template.fits', 'stellar')], validators=[Optional()])
-    upload_template = FileField('', validators=[ UploadRequired('template_type'), FileAllowed(['.fits'])])
+    upload_template = FileField('', validators=[ UploadRequired('template_type'), FileAllowed(['fits'])])
 
     magnitude = FloatField('Magnitude', validators=[DataRequired()])
     filter = SelectField('Magnitude Band', choices=['H', 'J', 'I'], validators=[DataRequired()])
