@@ -7,99 +7,117 @@
     <form action="" method="post" class="form" role="form", enctype="multipart/form-data", autocomplete="off" novalidate>
     {{ form.csrf_token() }}
         <div class="row align-items-center">
-            <div class="col-2 border-end">
+            <div class="col-3">
                 <h4>Template:</h4>
             </div>
-            <div class="col-3 border-end">
-                {{ render_field(form.template_name, disabled=form.template_type.data) }}
-                <div class="input-group">
-                    <div class="input-group-text">
-                    {{ render_field(form.template_type, class="form-check-input mt-0", type="checkbox")}} 
-                    </div>
-                    {% if form.upload_template.errors %}
-                        {{ form.upload_template(class="form-control is-invalid", type="file", disabled=(not form.template_type.data)) }}
-                        {% for error in form.upload_template.errors %}
-                             <div class="invalid-feedback">
-                                {{ error }}
+            <div class="col-9 border-start border-end">
+                <div class="row justify-content-center gy-5 gx-5">
+                    <div class="col-auto">
+                        {{ render_field(form.template_name, disabled=form.template_type.data) }}
+                        <div class="input-group">
+                            <div class="input-group-text">
+                            {{ render_field(form.template_type, class="form-check-input mt-0", type="checkbox")}} 
                             </div>
-                        {% endfor %}
-                    {% else %}
-                        {{ form.upload_template(class="form-control", type="file", disabled=(not form.template_type.data)) }}
-                    {% endif %}        
+                            {% if form.upload_template.errors %}
+                                {{ form.upload_template(class="form-control is-invalid", type="file", disabled=(not form.template_type.data)) }}
+                                {% for error in form.upload_template.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                {{ form.upload_template(class="form-control", type="file", disabled=(not form.template_type.data)) }}
+                            {% endif %}        
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        {{ render_field(form.magnitude) }}
+                    </div>
+                    <div class="col-auto">
+                        {{ render_field(form.filter) }}
+                    </div>
+                    <div class="col-auto">
+                        {{ render_field(form.mag_system) }}
+                    </div>
+                    <div class="col-auto">
+                        {{ render_field(form.reddening) }}
+                    </div>
+                    <div class="col-auto">
+                        {{ render_field(form.displacement) }}
+                    </div>
                 </div>
             </div>
-            <div class="col-1 border-end">
-                {{ render_field(form.magnitude) }}
-            </div>
-            <div class="col-1 border-end">
-                {{ render_field(form.filter) }}
-            </div>
-            <div class="col-1 border-end">
-                {{ render_field(form.mag_system) }}
-            </div>
-            <div class="col-1 border-end">
-                {{ render_field(form.reddening) }}
-            </div>
-            <div class="col-2 border-end">
-                {{ render_field(form.displacement) }}
-            </div>
         </div>
         <hr>
         <div class="row align-items-center">
-            <div class="col-2 border-end">
+            <div class="col-3">
                 <h4>Instrument:</h4>
             </div>
-            <div class="col-1 border-end">
-                {{ render_field(form.moons_mode) }}
-            </div>
-            <div class="col-2 border-end">
-                {{ render_field(form.strategy) }}
-            </div>
-            <div class="col-2 border-end">
-                {{ render_field(form.atm_dif_ref) }}
-            </div>
-            <div class="col-1 border-end">
-                {{ render_field(form.exptime) }}
-            </div>
-            <div class="col-1 border-end">
-                {{ render_field(form.N_exp) }}
-            </div>
-            <div class="col-1 border-end">
-                {{ render_field(form.dit) }}
+            <div class="col-9 border-start border-end">
+                <div class="row gy-5 gx-5 justify-content-center">
+                    <div class="col-auto">
+                        {{ render_field(form.moons_mode) }}
+                    </div>
+                    <div class="col-auto">
+                        {{ render_field(form.strategy) }}
+                    </div>
+                    <div class="col-auto">
+                        {{ render_field(form.atm_dif_ref) }}
+                    </div>
+                    <div class="col-auto">
+                        {{ render_field(form.exptime) }}
+                    </div>
+                    <div class="col-auto">
+                        {{ render_field(form.N_exp) }}
+                    </div>
+                    <div class="col-auto">
+                        {{ render_field(form.dit) }}
+                    </div>
+                </div>
             </div>
         </div>
         <hr>
         <div class="row align-items-center">
-            <div class="col-2 border-end">
+            <div class="col-3">
                 <h4>Simulation:</h4>
             </div>
-            <div class="col-3 border-end">
-                {{ render_field(form.sky_template) }}
-            </div>
-            <div class="col-3 border-end">
-                {{ render_field(form.sky_residual) }}
-            </div>
-            <div class="col-2 border-end">
-                {{ render_field(form.telluric) }}
-            </div>
-            <div class="col-1 border-end">
-                {{ render_field(form.flux_calib) }}
+            <div class="col-9 border-start border-end">
+                <div class="row gy-5 gx-5 justify-content-center">
+                    <div class="col-auto">
+                        {{ render_field(form.sky_template) }}
+                    </div>
+                    <div class="col-auto">
+                        {{ render_field(form.sky_residual) }}
+                    </div>
+                    <div class="col-auto">
+                        {{ render_field(form.telluric) }}
+                    </div>
+                    <div class="col-auto">
+                        {{ render_field(form.flux_calib) }}
+                    </div>
+                </div>
             </div>
         </div>
         <hr>
         <div class="row align-items-center">
-            <div class="col-2 border-end">
+            <div class="col-3">
                 <h4>Conditions:</h4>
             </div>
-            <div class="col-2 border-end">
-                {{ render_field(form.seeing) }}
-            </div>
-            <div class="col-2 border-end">
-                {{ render_field(form.airmass) }}
+            <div class="col-9 border-start border-end">
+                <div class="row gx-5 gx-5 justify-content-center">
+                    <div class="col-auto">
+                        {{ render_field(form.seeing) }}
+                    </div>
+                    <div class="col-auto">
+                        {{ render_field(form.airmass) }}
+                    </div>
+                </div>
             </div>
         </div>
         <hr>
-        {{ form.submit(class="btn btn-primary", type="submit") }}
+        <div class="row justify-content-center">
+            {{ form.submit(class="btn btn-dark btn-lg", type="submit") }}
+        </div>
     </form>
 </div>
 {% endblock %}

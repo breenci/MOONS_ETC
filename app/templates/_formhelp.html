@@ -1,7 +1,7 @@
 {% macro render_field(field) %}
     {% if (field.type == "FloatField" or field.type == "IntegerField") %}
         {% if field.errors %}
-            {{ field.label }}
+            <label class="form-label"> <b> {{ field.label }} </b> </label>
             {{ field(class="form-control is-invalid", **kwargs)|safe }}
             {% for error in field.errors %}
                 <div class="invalid-feedback">
@@ -9,45 +9,45 @@
                 </div>
             {% endfor %}
         {% else %}
-        {{ field.label }}
+        <label class="form-label"> <b> {{ field.label }} </b> </label>
         {{ field(class="form-control", **kwargs)|safe }}        
         {% endif %}
     {% endif %}
     {% if field.type == "BooleanField" %}
         {% if field.errors %}
-        {{ field(class="form-check-input is-invalid", **kwargs)|safe }}{{ field.label }}
+        {{ field(class="form-check-input is-invalid", **kwargs)|safe }} <b> {{ field.label }} </b>
             {% for error in field.errors %}
                 <div class="invalid-feedback">
                     {{ error }}
                 </div>
             {% endfor %}
         {% else %}
-        {{ field(class="form-check-input", **kwargs)|safe }} {{ field.label }}        
+        {{ field(class="form-check-input", **kwargs)|safe }} <b> {{ field.label }} </b>       
         {% endif %}
     {% endif %}
     {% if field.type == "SelectField" %}
         {% if field.errors %}
-        {{ field(class="form-select is-invalid", **kwargs)|safe }}{{ field.label }}
+        {{ field(class="form-select is-invalid", **kwargs)|safe }}<label class="form-label"> <b> {{ field.label }} </b> </label>
             {% for error in field.errors %}
                 <div class="invalid-feedback">
                     {{ error }}
                 </div>
             {% endfor %}
         {% else %}
-        {{ field.label }}
+        <label class="form-label"> <b> {{ field.label }} </b> </label>
         {{ field(class="form-select", **kwargs)|safe }}        
         {% endif %}
     {% endif %}
     {% if field.type == "FileField" %}
         {% if field.errors %}
-        {{ field(class="form-control is-invalid", **kwargs)|safe }}{{ field.label }}
+        {{ field(class="form-control is-invalid", **kwargs)|safe }}<label class="form-label"> <b> {{ field.label }} </b> </label>
             {% for error in field.errors %}
                 <div class="invalid-feedback">
                     {{ error }}
                 </div>
             {% endfor %}
         {% else %}
-        {{ field.label }}
+        <label class="form-label"> <b> {{ field.label }} </b> </label>
         {{ field(class="form-select", **kwargs)|safe }}        
         {% endif %}
     {% endif %}
