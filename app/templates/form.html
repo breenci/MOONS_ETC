@@ -11,7 +11,7 @@
                 <h4>Template:</h4>
             </div>
             <div class="col-9 border-start border-end">
-                <div class="row justify-content-center gy-5 gx-5">
+                <div class="row gy-5 gx-5">
                     <div class="col-auto">
                         {{ render_field(form.template_name, disabled=form.template_type.data) }}
                         <div class="input-group">
@@ -54,7 +54,7 @@
                 <h4>Instrument:</h4>
             </div>
             <div class="col-9 border-start border-end">
-                <div class="row gy-5 gx-5 justify-content-center">
+                <div class="row gy-5 gx-5">
                     <div class="col-auto">
                         {{ render_field(form.moons_mode) }}
                     </div>
@@ -82,7 +82,7 @@
                 <h4>Simulation:</h4>
             </div>
             <div class="col-9 border-start border-end">
-                <div class="row gy-5 gx-5 justify-content-center">
+                <div class="row gy-5 gx-5">
                     <div class="col-auto">
                         {{ render_field(form.sky_template) }}
                     </div>
@@ -104,7 +104,7 @@
                 <h4>Conditions:</h4>
             </div>
             <div class="col-9 border-start border-end">
-                <div class="row gx-5 gx-5 justify-content-center">
+                <div class="row gx-5 gx-5">
                     <div class="col-auto">
                         {{ render_field(form.seeing) }}
                     </div>
@@ -115,7 +115,7 @@
             </div>
         </div>
         <hr>
-        <div class="row justify-content-center">
+        <div class="row">
             {{ form.submit(class="btn btn-dark btn-lg", type="submit") }}
         </div>
     </form>
