@@ -7,26 +7,29 @@ from wtforms import SelectField, IntegerField, SubmitField, FloatField, BooleanF
 from wtforms.validators import DataRequired, NumberRange, ValidationError, Optional
 
 
-class UploadRequired:
+class RequiredIfTrue:
+    """Validator to require input if another field is used"""
 
     def __init__(self, fieldname, message=None):
         self.fieldname = fieldname
         self.message = message
 
     def __call__(self, form, field):
+        # make sure other field is a valid field
         try:
             other = form[self.fieldname]
         except KeyError as exc:
             raise ValidationError(
                 field.gettext("Invalid field name '%s'.") % self.fieldname
             ) from exc
+        # return if other field is not used
         if other.data == False:
-            print('Not selected')
             return
+        # elif other field is used return if input is given
         elif field.data:
-            print('There is data')
             return
 
+        # otherwise raise an error
         message = self.message
         if message is None:
             message = field.gettext("Upload file or use a default")
@@ -39,7 +42,7 @@ class ETC_form(FlaskForm):
     template_type = BooleanField('')
     template_name = SelectField('Template', choices=[('app/static/Example_spectra/constant_in_wav.fits', 'constant_in_wav'), 
                     ('app/static/Example_spectra/input_stellar_template.fits', 'stellar')], validators=[Optional()])
-    upload_template = FileField('', validators=[ UploadRequired('template_type'), FileAllowed(['fits'])])
+    upload_template = FileField('', validators=[ RequiredIfTrue('template_type'), FileAllowed(['fits'])])
 
     magnitude = FloatField('Magnitude', validators=[DataRequired()])
     filter = SelectField('Magnitude Band', choices=['H', 'J', 'I'], validators=[DataRequired()])

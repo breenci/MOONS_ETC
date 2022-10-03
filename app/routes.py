@@ -5,7 +5,6 @@ from uuid import uuid4
 import os
 import shutil
 import numpy as np
-from app.make_plots import plot_folder
 from app.forms import ETC_form
 from app.moons_etc_backend import do_etc_calc
 import plotly.graph_objects as go
@@ -36,8 +35,11 @@ def index():
     # create instance of ETC form to capture input parameters
     form = ETC_form()
 
-    # if the form runs without error to the etc calcs and store result
+    # if the form runs without error to the etc backend calcs and store result
     if form.validate_on_submit():
+
+        # do cleanup if required
+        cleanup('app/static/user_files/', 5)
 
         # unique id for the user
         id = str(uuid4())
@@ -50,14 +52,12 @@ def index():
                 os.makedirs(path)
 
 
-        if form.upload_template.data != None:
+        if form.template_type and form.upload_template.data != None:
             # get uploaded file
             uploaded_template = request.files[form.upload_template.name]
             uploaded_template.save('app/static/user_files/' + id + '/uploaded_template.fits')
             form.template_name.data = 'app/static/user_files/' + id + '/uploaded_template.fits'
 
-        # do cleanup if required
-        cleanup('app/static/user_files/', 5)
 
         # do etc calculations with form input
         do_etc_calc(id, form.data)
@@ -75,22 +75,28 @@ def send_report(filename):
     return send_from_directory('static/user_files', rel_path, as_attachment=True)
 
 
+# dynamically update results based on plot selection 
 @app.route('/callback', methods=['POST', 'GET'])
 def cb():
     print(request.args.get('data'))
     return make_plot(request.args.get('folder'), request.args.get('data'))
 
 
+# results page
 @app.route('/results/<user_folder>')
-def results2(user_folder):
+def results(user_folder):
     return render_template('results.html', graphJSON=make_plot(user_folder), folder=user_folder)
 
 
 def make_plot(user_folder, plot_type='SN'):
-    file_list = glob.glob('app/static/user_files/'+user_folder+'/'+plot_type+'/*.txt')
-    print(user_folder+'/'+plot_type+'/*.txt')
+    '''Make an interactive plot'''
 
+    # gather all the bands
+    file_list = glob.glob('app/static/user_files/'+user_folder+'/'+plot_type+'/*.txt')
+
+    # create figure
     fig = go.Figure()
+    # plot each band (bands are identified by starting wavelength)
     for file in file_list:
         data = np.loadtxt(file)
         wl = data[1:,0]
@@ -105,6 +111,7 @@ def make_plot(user_folder, plot_type='SN'):
             fig.add_trace(go.Scatter(x=wl, y=snr, mode='lines', name='YJ',
             line=dict(color='magenta', width=.5)))
     
+    # add axis labels
     if plot_type == 'SN':
         fig.update_layout(xaxis_title='Wavelength / micron',
                     yaxis_title='SNR', height=800, width=1200)
@@ -115,6 +122,7 @@ def make_plot(user_folder, plot_type='SN'):
         fig.update_layout(xaxis_title='Wavelength / micron',
                     yaxis_title='Object Spectrum', height=800, width=1200)
 
+    # output as JSON  
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
     return graphJSON
