@@ -24,11 +24,8 @@ import configparser
 def getConfig(ConfigFile):
     config = configparser.ConfigParser()
     read=config.read(ConfigFile)
-    with open('info.html', 'w') as file:
-        file.write('Succesfully loaded Configuration file: ' + str(read) + \
-             '\nSuccesfully loaded Configuration file: ' + str(read))
-        print('Succesfully loaded Configuration file: ',read)
-        print('Succesfully loaded Configuration file: ',read)
+    print('Succesfully loaded Configuration file: ',read)
+    print('Succesfully loaded Configuration file: ',read)
     return config 
 
 
@@ -37,8 +34,6 @@ def getConfig(ConfigFile):
 def getParams(ParamFile):
     params = configparser.ConfigParser()
     read=params.read(ParamFile)
-    with open('info.html', 'a') as file:
-        file.write('\nSuccesfully loaded Parameter file: ' + str(read))
     print('Succesfully loaded Parameter file: ',read)
     return params 
 
@@ -80,9 +75,6 @@ def get_input(params):
 def calculate_ndits(uservals):
     uservals['N_dit']=int(uservals['exptime']/uservals['dit'])
     uservals['effective_exposure']=uservals['N_dit']*uservals['dit']
-    with open('info.html', 'a') as file:
-        file.write('Number of IR detector DITs: %s'%uservals['N_dit'] + \
-            '\nTotal on source time in IR detectors: %s'%uservals['effective_exposure'])
     print('Number of IR detector DITs: %s'%uservals['N_dit'])
     print('Total on source time in IR detectors: %s'%uservals['effective_exposure'])
     return uservals
