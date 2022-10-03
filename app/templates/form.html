@@ -7,10 +7,10 @@
     <form action="" method="post" class="form" role="form", enctype="multipart/form-data", autocomplete="off" novalidate>
     {{ form.csrf_token() }}
         <div class="row align-items-center">
-            <div class="col-3">
-                <h4>Template:</h4>
+            <div class="col-2">
+                <h5>Template:</h5>
             </div>
-            <div class="col-9 border-start border-end">
+            <div class="col-10 border-start border-end">
                 <div class="row gy-5 gx-5">
                     <div class="col-auto">
                         {{ render_field(form.template_name, disabled=form.template_type.data) }}
@@ -50,10 +50,10 @@
         </div>
         <hr>
         <div class="row align-items-center">
-            <div class="col-3">
-                <h4>Instrument:</h4>
+            <div class="col-2">
+                <h5>Instrument:</h5>
             </div>
-            <div class="col-9 border-start border-end">
+            <div class="col-10 border-start border-end">
                 <div class="row gy-5 gx-5">
                     <div class="col-auto">
                         {{ render_field(form.moons_mode) }}
@@ -78,13 +78,28 @@
         </div>
         <hr>
         <div class="row align-items-center">
-            <div class="col-3">
-                <h4>Simulation:</h4>
+            <div class="col-2">
+                <h5>Simulation:</h5>
             </div>
-            <div class="col-9 border-start border-end">
+            <div class="col-10 border-start border-end">
                 <div class="row gy-5 gx-5">
                     <div class="col-auto">
-                        {{ render_field(form.sky_template) }}
+                        {{ render_field(form.sky_template, disabled=form.sky_type.data) }}
+                        <div class="input-group">
+                            <div class="input-group-text">
+                            {{ render_field(form.sky_type, class="form-check-input mt-0", type="checkbox")}} 
+                            </div>
+                            {% if form.upload_sky.errors %}
+                                {{ form.upload_sky(class="form-control is-invalid", type="file", disabled=(not form.sky_type.data)) }}
+                                {% for error in form.sky_template.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                {{ form.upload_sky(class="form-control", type="file", disabled=(not form.sky_type.data)) }}
+                            {% endif %}        
+                        </div>
                     </div>
                     <div class="col-auto">
                         {{ render_field(form.sky_residual) }}
@@ -100,10 +115,10 @@
         </div>
         <hr>
         <div class="row align-items-center">
-            <div class="col-3">
-                <h4>Conditions:</h4>
+            <div class="col-2">
+                <h5>Conditions:</h5>
             </div>
-            <div class="col-9 border-start border-end">
+            <div class="col-10 border-start border-end">
                 <div class="row gx-5 gx-5">
                     <div class="col-auto">
                         {{ render_field(form.seeing) }}
@@ -128,6 +143,11 @@
     $("#template_type").on("click", function() {
     $("#template_name").prop('disabled', (i, v) => !v);
     $("#upload_template").prop('disabled', (i, v) => !v);
+})
+
+    $("#sky_type").on("click", function() {
+    $("#sky_template").prop('disabled', (i, v) => !v);
+    $("#upload_sky").prop('disabled', (i, v) => !v);
 })
 </script>
 {% endblock %}

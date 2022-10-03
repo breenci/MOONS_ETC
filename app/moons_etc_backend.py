@@ -80,10 +80,11 @@ def get_input(params):
 def calculate_ndits(uservals):
     uservals['N_dit']=int(uservals['exptime']/uservals['dit'])
     uservals['effective_exposure']=uservals['N_dit']*uservals['dit']
-    with open('info.html', 'w') as file:
-        file.write('Number of IR detector DITs: %s'%uservals['N_dit'])
-        print('Number of IR detector DITs: %s'%uservals['N_dit'])
-        print('Total on source time in IR detectors: %s'%uservals['effective_exposure'])
+    with open('info.html', 'a') as file:
+        file.write('Number of IR detector DITs: %s'%uservals['N_dit'] + \
+            '\nTotal on source time in IR detectors: %s'%uservals['effective_exposure'])
+    print('Number of IR detector DITs: %s'%uservals['N_dit'])
+    print('Total on source time in IR detectors: %s'%uservals['effective_exposure'])
     return uservals
 
 def calculate_texp(uservals):
@@ -245,7 +246,7 @@ def get_line_profile(filename, wave_spec, flux_spec, disp):
     flux_conv=np.convolve(flux_spec,k_x_sim,mode="same") #Convolve with line profile kernel, resampled to simulation dispersion steps
     return flux_conv
 
-def get_sky_model(sky_template,airmass_fl):
+def get_sky_model(sky_template, airmass_fl, folder):
     if sky_template=='eso_skycalc':
         print('Using ESO SkyCalc template for Mean Sky conditions')
         available_airmass=np.array([1.0,1.2,1.4,1.6,1.8,2.0])
@@ -277,11 +278,12 @@ def get_sky_model(sky_template,airmass_fl):
     else:
         skyfile=sky_template
         try:
-            fits.getdata(str(skyfile))
+            fits.getdata('app/static/user_files/' + folder + '/uploaded_sky_template.fits')
         except FileNotFoundError:
             print("FITS file not found or not valid input file")
             exit()
         spec_hdu=fits.open(str(skyfile))
+        print('Skymodel selected: User upload')
         spec=spec_hdu[0].data
         trans_spec=spec_hdu[1].data
         spec_header=spec_hdu[0].header
@@ -346,11 +348,11 @@ def get_efficiency(bandpass,outputwl, min_wl, max_wl,instrumentconfig, uservals)
     print(' ')
     return eff,response,eff_ins,tel_eff,QE_detector
 
-def get_sky_spectrum(uservals,instrumentconfig,telescopeconfig, min_wl, max_wl):
+def get_sky_spectrum(uservals,instrumentconfig,telescopeconfig, min_wl, max_wl, folder):
     ####################################################################
     #obtain Sky spectrum from template (either provided or ESO sky_calc)
     sky_data={}
-    oh_f=get_sky_model(uservals['sky_template'], uservals['airmass_fl'])
+    oh_f=get_sky_model(uservals['sky_template'], uservals['airmass_fl'], folder)
     sky_data['rdwl']=oh_f['rdwl']
     rwl0=oh_f['rwl0'] # wavelength of sky model in Angstroms
     rfn0=oh_f['rfn0']*math.pi*(telescopeconfig['t_aperture']*1.e2/2.0)**2*sky_data['rdwl'] #Photons/s/arcsec2 per pixel of the OH grid
@@ -449,7 +451,7 @@ def conv_sky(sky_data,min_wl,max_wl, template_data, uservals,pixel_data, instrum
 def write_out_file(x_print, y_print, name_x, name_y, sens_out_file):
     name_x=['# '+name_x]
     name_y=[name_y]
-    with open('app/static/user_files/'+sens_out_file,'w+') as f:
+    with open('app/static/user_files/'+sens_out_file,'w') as f:
         writer = csv.writer(f,delimiter='\t')
         writer.writerows(zip(name_x,name_y))
         writer.writerows(zip(x_print,y_print))
@@ -666,34 +668,34 @@ def make_simulation(exp_type,bandpass, pixel_data,sky_data,template_norm, templa
         print('WARNING!!! Counts above saturation/linearity regime!!!')
     #Get figure with summary of results
     #SNR figure
-    f=plt.figure(figsize=(10,8),dpi=100)
-    ax1=f.add_subplot(221)
-    ax1.plot(outputwl/1.0e4, sn_cont_all,label='SNR per pixel')
-    ax1.axis([instrumentconfig['wlr'][0], instrumentconfig['wlr'][1], np.nanmin(sn_cont_all), np.nanmax(sn_cont_all)])
-    ax1.set_xlabel('Wavelength [um]')
-    ax1.set_ylabel('SNR (/pix)')
-    plt.legend(loc='upper right',prop={'size':8}, numpoints=1)
+    # f=plt.figure(figsize=(10,8),dpi=100)
+    # ax1=f.add_subplot(221)
+    # ax1.plot(outputwl/1.0e4, sn_cont_all,label='SNR per pixel')
+    # ax1.axis([instrumentconfig['wlr'][0], instrumentconfig['wlr'][1], np.nanmin(sn_cont_all), np.nanmax(sn_cont_all)])
+    # ax1.set_xlabel('Wavelength [um]')
+    # ax1.set_ylabel('SNR (/pix)')
+    # plt.legend(loc='upper right',prop={'size':8}, numpoints=1)
 
-    #Sky spectrum
-    ax1=f.add_subplot(222)
-    ax1.plot(outputwl/1.0e4, spec_2d_peak_intensity,label='Peak Intensity')
-    ax1.axis([instrumentconfig['wlr'][0], instrumentconfig['wlr'][1], np.nanmin(spec_2d_peak_intensity), np.nanmax(spec_2d_peak_intensity)])
-    if saturated:
-        ax1.plot(outputwl/1.0e4,spec_2d_peak_intensity*0.0+instrumentconfig['saturation_level']/instrumentconfig['gain'],color='red',label='Saturation')
-    plt.legend(loc='upper right',prop={'size':8}, numpoints=1)
-    ax1.set_xlabel('Wavelength [um]')
-    ax1.set_ylabel('Counts (e-)')
+    # #Sky spectrum
+    # ax1=f.add_subplot(222)
+    # ax1.plot(outputwl/1.0e4, spec_2d_peak_intensity,label='Peak Intensity')
+    # ax1.axis([instrumentconfig['wlr'][0], instrumentconfig['wlr'][1], np.nanmin(spec_2d_peak_intensity), np.nanmax(spec_2d_peak_intensity)])
+    # if saturated:
+    #     ax1.plot(outputwl/1.0e4,spec_2d_peak_intensity*0.0+instrumentconfig['saturation_level']/instrumentconfig['gain'],color='red',label='Saturation')
+    # plt.legend(loc='upper right',prop={'size':8}, numpoints=1)
+    # ax1.set_xlabel('Wavelength [um]')
+    # ax1.set_ylabel('Counts (e-)')
 
-    #atmospheric transmission
-    ax1=f.add_subplot(223)
-    ax1.plot(outputwl/1.0e4, atminterp ,label='Atmospheric transmission')
-    ax1.axis([instrumentconfig['wlr'][0], instrumentconfig['wlr'][1],np.nanmin(atminterp), np.nanmax(atminterp)] )# np.nanmin(eff*atminterp), np.nanmax(eff*atminterp)])
-    ax1.set_xlabel('Wavelength [um]')
-    ax1.set_ylabel('Transmission fraction')
-    plt.legend(loc='lower left',prop={'size':8}, numpoints=1)
+    # #atmospheric transmission
+    # ax1=f.add_subplot(223)
+    # ax1.plot(outputwl/1.0e4, atminterp ,label='Atmospheric transmission')
+    # ax1.axis([instrumentconfig['wlr'][0], instrumentconfig['wlr'][1],np.nanmin(atminterp), np.nanmax(atminterp)] )# np.nanmin(eff*atminterp), np.nanmax(eff*atminterp)])
+    # ax1.set_xlabel('Wavelength [um]')
+    # ax1.set_ylabel('Transmission fraction')
+    # plt.legend(loc='lower left',prop={'size':8}, numpoints=1)
 
     #Simulated spectrum
-    ax1=f.add_subplot(224)
+    # ax1=f.add_subplot(224)
     res_noise=np.random.normal(outnoise*0.0,outnoise,size=None)
     res_sky=np.random.normal(outnoise*0.0,noiseskyres,size=None)    
     sim_spectrum={}
@@ -728,15 +730,15 @@ def make_simulation(exp_type,bandpass, pixel_data,sky_data,template_norm, templa
     sim_spectrum['crval']=outputwl[0]
     sim_spectrum['SNR']=sn_central
     sim_spectrum['resolving_power']=instrumentconfig['resolution']
-    ax1.plot(outputwl/1.0e4, sim_spectrum_flux,label='Sim spectrum (not flux calib)')
-    ax1.plot(outputwl/1.0e4, spec_source*detectorconfig['N_dit']/atminterp,label='Observed target (no noise)',alpha=0.6)
-    ax1.axis([instrumentconfig['wlr'][0], instrumentconfig['wlr'][1], np.nanmin(sim_spectrum_flux[(sim_spectrum_flux != -np.inf) & (sim_spectrum_flux != np.inf)]), np.nanmax(sim_spectrum_flux[(sim_spectrum_flux != -np.inf) & (sim_spectrum_flux != np.inf)])])
-    ax1.set_xlabel('Wavelength [um]')
-    ax1.set_ylabel('Counts (e-)')
-    plt.legend(loc='upper right',prop={'size':8}, numpoints=1)
-    plt.tight_layout()
-    #f.savefig("app/static/ETC_results_%s_%s.pdf"%(bandpass,exp_type), bbox_inches='tight')
-    plt.close()
+    # ax1.plot(outputwl/1.0e4, sim_spectrum_flux,label='Sim spectrum (not flux calib)')
+    # ax1.plot(outputwl/1.0e4, spec_source*detectorconfig['N_dit']/atminterp,label='Observed target (no noise)',alpha=0.6)
+    # ax1.axis([instrumentconfig['wlr'][0], instrumentconfig['wlr'][1], np.nanmin(sim_spectrum_flux[(sim_spectrum_flux != -np.inf) & (sim_spectrum_flux != np.inf)]), np.nanmax(sim_spectrum_flux[(sim_spectrum_flux != -np.inf) & (sim_spectrum_flux != np.inf)])])
+    # ax1.set_xlabel('Wavelength [um]')
+    # ax1.set_ylabel('Counts (e-)')
+    # plt.legend(loc='upper right',prop={'size':8}, numpoints=1)
+    # plt.tight_layout()
+    # #f.savefig("app/static/ETC_results_%s_%s.pdf"%(bandpass,exp_type), bbox_inches='tight')
+    # plt.close()
 
     if uservals['flux_calib']==1:
         if exp_type=='flux_calib':
@@ -905,7 +907,7 @@ def setup_magnitude(uservals):
             uservals['templ_wl_norm']=1.63
     return uservals
 
-def make_exposure(exp_type,uservals,params,config, folder):
+def make_exposure(exp_type,uservals, config, folder):
     if uservals['moons_mode']=='HR':
         bands=['HR-RI','YJ','HR-H']
     if uservals['moons_mode']=='LR':
@@ -941,7 +943,7 @@ def make_exposure(exp_type,uservals,params,config, folder):
         instrumentconfig=setup_moons(uservals,config,bandpass,device)
         min_wl, max_wl=get_minmax(instrumentconfig)
         detectorconfig=set_detector(telescopeconfig,uservals,instrumentconfig,device)
-        sky_data=get_sky_spectrum(uservals,instrumentconfig,telescopeconfig, min_wl, max_wl)
+        sky_data=get_sky_spectrum(uservals,instrumentconfig,telescopeconfig, min_wl, max_wl, folder)
         pixel_data=get_dispaxis(instrumentconfig,telescopeconfig,detectorconfig)
         number_of_pixels=np.size(pixel_data['outputwl'])
         template_data,instrumentconfig=get_respow(instrumentconfig,telescopeconfig,template_data)
@@ -955,7 +957,7 @@ def do_etc_calc(folder, uservals):
     params= getParams('app/static/user_files/' + folder +'/ParamFile.ini')   
     exp_type='target'
     uservals['airmass_fl'] = uservals['airmass']
-    make_exposure(exp_type,uservals,params,config,folder)
+    make_exposure(exp_type,uservals,config,folder)
 
 if __name__ == "__main__":
     config=getConfig('Inst_setup/ConfigFile.ini')

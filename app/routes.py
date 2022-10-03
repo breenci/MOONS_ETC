@@ -58,6 +58,12 @@ def index():
             uploaded_template.save('app/static/user_files/' + id + '/uploaded_template.fits')
             form.template_name.data = 'app/static/user_files/' + id + '/uploaded_template.fits'
 
+        if form.sky_type and form.upload_sky.data != None:
+            # get uploaded file
+            uploaded_sky = request.files[form.upload_sky.name]
+            uploaded_sky.save('app/static/user_files/' + id + '/uploaded_sky_template.fits')
+            form.sky_template.data = 'app/static/user_files/' + id + '/uploaded_sky_template.fits'
+
 
         # do etc calculations with form input
         do_etc_calc(id, form.data)
